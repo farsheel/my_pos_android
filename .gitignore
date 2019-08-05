@@ -2,6 +2,9 @@
 # Created by https://www.gitignore.io/api/java,kotlin,android,androidstudio
 # Edit at https://www.gitignore.io/?templates=java,kotlin,android,androidstudio
 
+keystore.properties
+*jks
+
 ### Android ###
 # Built application files
 *.apk
