@@ -4,7 +4,9 @@ import android.app.Application
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.AndroidViewModel
-
+import androidx.work.*
+import com.farsheel.mypos.data.work.SyncWorkManager
+import java.util.concurrent.TimeUnit
 
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application), Observable {
@@ -31,6 +33,21 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
         callbacks.notifyCallbacks(this, fieldId, null)
     }
 
+
+    protected fun scheduleWork() {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val work = PeriodicWorkRequestBuilder<SyncWorkManager>(15, TimeUnit.MINUTES)
+        work.addTag(SyncWorkManager::class.java.simpleName)
+        work.setConstraints(constraints)
+
+        WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork(
+            SyncWorkManager::class.java.simpleName,
+            ExistingPeriodicWorkPolicy.REPLACE,
+            work.build()
+        )
+    }
 
     override fun addOnPropertyChangedCallback(
         callback: Observable.OnPropertyChangedCallback

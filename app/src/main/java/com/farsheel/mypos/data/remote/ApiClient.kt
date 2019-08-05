@@ -1,6 +1,7 @@
 package com.farsheel.mypos.data.remote
 
 import android.app.Application
+import android.content.Context
 import com.farsheel.mypos.BuildConfig
 import com.farsheel.mypos.data.local.PreferenceManager
 import okhttp3.Interceptor
@@ -15,7 +16,7 @@ class ApiClient {
     companion object {
         private const val BASE_URL = BuildConfig.API_URL
 
-        private fun create(application: Application): Retrofit {
+        private fun create(application: Context): Retrofit {
             return Retrofit.Builder()
                 .client(
                     OkHttpClient().newBuilder()
@@ -32,18 +33,18 @@ class ApiClient {
         }
 
 
-        fun getApiService(application: Application): WebServices {
-            return create(application).create(WebServices::class.java)
+        fun getApiService(context: Context): WebServices {
+            return create(context).create(WebServices::class.java)
         }
     }
 
-    class HeaderInterceptor(val application: Application) : Interceptor {
+    class HeaderInterceptor(val context: Context) : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val builder = chain.request().newBuilder()
             builder.addHeader("Accept", "application/json")
             builder.addHeader(
                 "Authorization",
-                "Bearer " + PreferenceManager.getUserToken(application)
+                "Bearer " + PreferenceManager.getUserToken(context)
             )
             return chain.proceed(builder.build())
         }

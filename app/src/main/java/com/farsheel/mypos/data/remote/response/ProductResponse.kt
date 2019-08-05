@@ -21,7 +21,7 @@ data class ProductResponse(
     @SerializedName("last_page_url")
     val lastPageUrl: String = "",
     @SerializedName("next_page_url")
-    val nextPageUrl: String = "",
+    val nextPageUrl: String? = "",
     @SerializedName("from")
     val from: Int = 0,
     @SerializedName("to")

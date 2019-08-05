@@ -14,7 +14,7 @@ class PreferenceManager {
         private const val PREF_FULL_NAME = "PREF_FULL_NAME"
         private const val PREF_USER_ID = "PREF_USER_ID"
 
-        fun setUserSession(application: Application, loginResponse: LoginResponse) {
+        fun setUserSession(application: Context, loginResponse: LoginResponse) {
             val mySharedPreferences: SharedPreferences =
                 application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
             val myEditor: SharedPreferences.Editor = mySharedPreferences.edit()
@@ -25,13 +25,13 @@ class PreferenceManager {
             myEditor.apply()
         }
 
-        fun isUserSessionAvailable(application: Application): Boolean {
+        fun isUserSessionAvailable(application: Context): Boolean {
             val mySharedPreferences: SharedPreferences =
                 application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
             return mySharedPreferences.getString(PREF_TOKEN, null) != null
         }
 
-        fun getUserToken(application: Application): String? {
+        fun getUserToken(application: Context): String? {
             val mySharedPreferences: SharedPreferences =
                 application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
             return mySharedPreferences.getString(PREF_TOKEN, "")
