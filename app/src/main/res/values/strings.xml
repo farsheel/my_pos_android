@@ -1,0 +1,51 @@
+<resources>
+    <string name="app_name">myPOS</string>
+    <string name="action_settings">Settings</string>
+    <string name="products">Products</string>
+    <string name="order_history">Order History</string>
+    <string name="settings">Settings</string>
+    <string name="upc">UPC</string>
+    <string name="item_id">Item ID</string>
+    <string name="price">Price</string>
+    <string name="description">Description</string>
+    <string name="category">Category</string>
+    <string name="name">Name</string>
+    <string name="search">Search</string>
+    <string name="search_products">Search Products</string>
+    <string name="categories">Categories</string>
+    <string name="search_categories">Search Categories</string>
+    <string name="name_can_not_be_empty">Name can not be empty</string>
+    <string name="description_can_not_be_empty">Description can not be empty</string>
+    <string name="something_went_wrong">Something went wrong</string>
+    <string name="category_saved">Category saved!</string>
+    <string name="price_can_not_be_empty">Price can not be empty</string>
+    <string name="please_select_category">Please select category</string>
+    <string name="upc_can_not_empty">UPC can not be empty</string>
+    <string name="product_saved">Product saved!</string>
+    <string name="total">Total: %s</string>
+    <string name="clear_cart">Clear Cart</string>
+    <string name="undo">Undo</string>
+    <string name="subtotal">Subtotal: %s</string>
+    <string name="discount">Discount: %s</string>
+    <string name="pay">Pay: %s</string>
+    <string name="apply">Apply</string>
+    <string name="quantity">Quantity</string>
+    <string name="amount_to_pay">Amount To Pay:</string>
+    <string name="cash">Cash</string>
+    <string name="cheque">Cheque</string>
+    <string name="amount">Amount</string>
+    <string name="_continue">Continue</string>
+    <string name="done">Done</string>
+    <string name="start_a_new_sale">Start a new sale</string>
+    <string name="entered_a_lesser_amount_message">You entered a lesser amount than tendered amount. Do you want to reset?</string>
+    <string name="yes">Yes</string>
+    <string name="cancel">Cancel</string>
+    <string name="balance">Balance %s</string>
+    <string name="print_receipt">Print Receipt</string>
+    <string name="email">Email</string>
+    <string name="password">Password</string>
+    <string name="login">Login</string>
+    <string name="send_email_receipt">Send email receipt</string>
+
+
+</resources>

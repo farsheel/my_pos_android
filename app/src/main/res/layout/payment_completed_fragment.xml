@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".view.payment.completed.PaymentCompletedFragment">
+
+    <data>
+
+        <import type="com.farsheel.mypos.util.Util" />
+
+        <import type="android.view.View" />
+
+        <variable
+                name="viewmodel"
+                type="com.farsheel.mypos.view.payment.completed.PaymentCompletedViewModel" />
+
+    </data>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/doneTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="40dp"
+                    android:drawableBottom="@drawable/ic_check_outline_big_green"
+                    android:gravity="center"
+                    android:text="@string/done"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/amountPaid"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{Util.currencyLocale(viewmodel.amountPaid)}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/doneTv"
+                    tools:text="$200.00" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/balanceTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@{@string/balance(Util.currencyLocale(viewmodel.balance))}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline6"
+                    android:visibility="@{viewmodel.balance.doubleValue() == 0?View.GONE:View.VISIBLE}"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/amountPaid"
+                    app:layout_constraintVertical_bias="0"
+                    tools:text="$200.00" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/emailLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_large"
+                    android:layout_marginTop="@dimen/margin_large"
+                    android:hint="@string/send_email_receipt"
+                    app:layout_constraintBottom_toTopOf="@+id/startNewSaleBtn"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/balanceTv"
+                    app:layout_constraintVertical_bias=".1">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:inputType="textEmailAddress"
+                        android:paddingEnd="64dp"
+                        android:text="@={viewmodel.email}"
+                        tools:ignore="RtlSymmetry" />
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <androidx.appcompat.widget.AppCompatImageButton
+                    android:id="@+id/sendBtn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginTop="5dp"
+                    android:enabled="@{!viewmodel.busy}"
+                    android:onClick="@{()-> viewmodel.printReceipt()}"
+
+                    android:src="@drawable/ic_send_black_24dp"
+                    android:theme="@style/MaterialButtonPrimary"
+                    android:tint="@android:color/white"
+                    android:visibility="@{viewmodel.busy?View.INVISIBLE:View.VISIBLE}"
+                    app:layout_constraintBottom_toBottomOf="@id/emailLayout"
+                    app:layout_constraintEnd_toEndOf="@id/emailLayout"
+                    app:layout_constraintTop_toTopOf="@+id/emailLayout" />
+
+            <ProgressBar
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:indeterminate="true"
+                    android:padding="@dimen/padding_small"
+                    android:visibility="@{viewmodel.busy?View.VISIBLE:View.GONE}"
+                    app:layout_constraintBottom_toBottomOf="@id/sendBtn"
+                    app:layout_constraintEnd_toEndOf="@id/sendBtn"
+                    app:layout_constraintStart_toStartOf="@id/sendBtn"
+                    app:layout_constraintTop_toTopOf="@id/sendBtn" />
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/startNewSaleBtn"
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="@dimen/margin_large"
+                    android:onClick="@{()-> viewmodel.onNewSale()}"
+                    android:text="@string/start_a_new_sale"
+                    android:theme="@style/MaterialButtonPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/emailLayout" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </ScrollView>
+
+</layout>

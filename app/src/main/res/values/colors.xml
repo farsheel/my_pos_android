@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#444e5e</color>
+    <color name="rippleTab">#353b48</color>
+    <color name="drawerBackground">#444e5e</color>
+    <color name="drawerCheckedBackground">#535d6e</color>
+    <color name="redUi">#e74c3c</color>
+    <color name="greenUi">#27ae60</color>
+    <color name="light_gray">#ecf0f1</color>
+</resources>

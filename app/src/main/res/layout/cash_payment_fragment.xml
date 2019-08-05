@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        tools:context=".view.payment.cash.CashPaymentFragment">
+
+    <data>
+
+        <import type="com.farsheel.mypos.util.Util" />
+
+        <variable
+                name="viewmodel"
+                type="com.farsheel.mypos.view.payment.cash.CashPaymentViewModel" />
+    </data>
+
+    <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="@dimen/padding_large">
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/amountToPayLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/amount_to_pay"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline5"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias=".2" />
+
+            <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/amountTv"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:text="@{Util.currencyLocale(viewmodel.amountToPay)}"
+                    android:textAppearance="@style/TextAppearance.MaterialComponents.Headline4"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/amountToPayLabel"
+                    tools:text="$1000.00" />
+
+            <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/amountLayout"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="@dimen/margin_small"
+                    android:hint="@string/amount"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/amountTv">
+
+                <com.google.android.material.textfield.TextInputEditText
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:inputType="numberDecimal"
+                        android:text="@={viewmodel.amountEntered}" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+            <com.google.android.material.button.MaterialButton
+                    android:id="@+id/continueBtn"
+                    style="@style/TextAppearance.MaterialComponents.Button"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{!viewmodel.busy}"
+                    android:onClick="@{()-> viewmodel.onClickContinue()}"
+                    android:text="@string/_continue"
+                    android:textAllCaps="false"
+                    android:theme="@style/MaterialButtonPrimary"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/amountLayout" />
+
+
+            <ProgressBar
+                    style="@style/Widget.AppCompat.ProgressBar.Horizontal"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:enabled="@{viewmodel.busy}"
+                    android:indeterminate="true"
+                    app:layout_constraintBottom_toBottomOf="@id/continueBtn"
+                    app:layout_constraintEnd_toEndOf="@id/continueBtn"
+                    app:layout_constraintStart_toStartOf="@id/continueBtn"
+                    app:layout_constraintTop_toTopOf="@id/continueBtn" />
+
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/suggestRow1"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/continueBtn">
+
+                <com.google.android.material.button.MaterialButton
+                        style="@style/MaterialButtonCash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:onClick="@{()-> viewmodel.onSelectSuggestion(5)}"
+                        android:text="@{Util.currencyLocale(5)}"
+                        tools:text="5.00" />
+
+                <com.google.android.material.button.MaterialButton
+                        style="@style/MaterialButtonCash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:onClick="@{()-> viewmodel.onSelectSuggestion(10)}"
+                        android:text="@{Util.currencyLocale(10)}"
+                        tools:text="10.00" />
+
+                <com.google.android.material.button.MaterialButton
+                        style="@style/MaterialButtonCash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:onClick="@{()-> viewmodel.onSelectSuggestion(20)}"
+                        android:text="@{Util.currencyLocale(20)}"
+                        tools:text="20.00" />
+
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                    android:id="@+id/suggestRow2"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/suggestRow1">
+
+                <com.google.android.material.button.MaterialButton
+                        style="@style/MaterialButtonCash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:onClick="@{()-> viewmodel.onSelectSuggestion(50)}"
+                        android:text="@{Util.currencyLocale(50)}"
+                        tools:text="50.00" />
+
+                <com.google.android.material.button.MaterialButton
+                        style="@style/MaterialButtonCash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:onClick="@{()-> viewmodel.onSelectSuggestion(100)}"
+                        android:text="@{Util.currencyLocale(100)}"
+                        tools:text="100.00" />
+
+                <com.google.android.material.button.MaterialButton
+                        style="@style/MaterialButtonCash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:onClick="@{()-> viewmodel.onSelectSuggestion(200)}"
+                        android:text="@{Util.currencyLocale(200)}"
+                        tools:text="200.00" />
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+            <androidx.appcompat.widget.LinearLayoutCompat
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/suggestRow2">
+
+                <com.google.android.material.button.MaterialButton
+                        style="@style/MaterialButtonCash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:onClick="@{()-> viewmodel.onSelectSuggestion(500)}"
+                        android:text="@{Util.currencyLocale(500)}"
+                        tools:text="500.00" />
+
+                <com.google.android.material.button.MaterialButton
+                        style="@style/MaterialButtonCash"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:enabled="@{!viewmodel.busy}"
+                        android:onClick="@{()-> viewmodel.onSelectSuggestion(2000)}"
+                        android:text="@{Util.currencyLocale(2000)}"
+                        tools:text="2000.00" />
+
+            </androidx.appcompat.widget.LinearLayoutCompat>
+
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </ScrollView>
+
+</layout>

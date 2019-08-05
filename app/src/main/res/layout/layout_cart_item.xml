@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="@dimen/padding_small">
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/quantityTv"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:drawableEnd="@drawable/ic_close_gray_16dp"
+            android:drawableRight="@drawable/ic_close_gray_24dp"
+            android:gravity="center"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="1" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/priceTv"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:drawablePadding="@dimen/padding_small"
+            android:gravity="center"
+            android:textSize="13sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@id/quantityTv"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="$100" />
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemNameTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:padding="@dimen/padding_small"
+            android:textColor="@android:color/black"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toStartOf="@+id/itemTotalPriceTv"
+            app:layout_constraintStart_toEndOf="@+id/priceTv"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Item name" />
+
+
+    <androidx.appcompat.widget.AppCompatTextView
+            android:id="@+id/itemTotalPriceTv"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:padding="@dimen/padding_small"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="$340" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
