@@ -4,9 +4,11 @@ import android.app.Application
 import androidx.databinding.Observable
 import androidx.databinding.PropertyChangeRegistry
 import androidx.lifecycle.AndroidViewModel
-import androidx.work.*
+import androidx.work.Constraints
+import androidx.work.NetworkType
+import androidx.work.OneTimeWorkRequestBuilder
+import androidx.work.WorkManager
 import com.farsheel.mypos.data.work.SyncWorkManager
-import java.util.concurrent.TimeUnit
 
 
 open class BaseViewModel(application: Application) : AndroidViewModel(application), Observable {
@@ -34,19 +36,14 @@ open class BaseViewModel(application: Application) : AndroidViewModel(applicatio
     }
 
 
-    protected fun scheduleWork() {
+    protected fun scheduleSyncWork() {
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
-        val work = PeriodicWorkRequestBuilder<SyncWorkManager>(15, TimeUnit.MINUTES)
+        val work = OneTimeWorkRequestBuilder<SyncWorkManager>()
         work.addTag(SyncWorkManager::class.java.simpleName)
         work.setConstraints(constraints)
-
-        WorkManager.getInstance(getApplication()).enqueueUniquePeriodicWork(
-            SyncWorkManager::class.java.simpleName,
-            ExistingPeriodicWorkPolicy.REPLACE,
-            work.build()
-        )
+        WorkManager.getInstance(getApplication()).enqueue(work.build())
     }
 
     override fun addOnPropertyChangedCallback(

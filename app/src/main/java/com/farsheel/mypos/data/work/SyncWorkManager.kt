@@ -16,7 +16,6 @@ class SyncWorkManager(context: Context, workerParams: WorkerParameters) :
     private val disposables = CompositeDisposable()
 
     override fun doWork(): Result {
-
         try {
             Thread.sleep(200)
         } catch (e: Exception) {
@@ -41,10 +40,12 @@ class SyncWorkManager(context: Context, workerParams: WorkerParameters) :
                         Thread.sleep(2000)
                     } catch (e: Exception) {
                     }
+                    if (t.data.isNullOrEmpty()) {
+                        return
+                    }
                     if (t.lastPage != page) {
                         syncProduct((page + 1))
                     }
-
                 }
 
                 override fun onError(e: Throwable) {
@@ -65,11 +66,13 @@ class SyncWorkManager(context: Context, workerParams: WorkerParameters) :
                         Thread.sleep(2000)
                     } catch (e: Exception) {
                     }
+                    if (t.data.isNullOrEmpty()) {
+                        return
+                    }
                     if (t.lastPage != page) {
                         syncCategory((page + 1))
                     }
                 }
-
                 override fun onError(e: Throwable) {
                 }
             })

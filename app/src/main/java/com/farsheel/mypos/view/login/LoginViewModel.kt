@@ -3,19 +3,16 @@ package com.farsheel.mypos.view.login
 import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.work.*
 import com.farsheel.mypos.base.BaseViewModel
 import com.farsheel.mypos.data.local.PreferenceManager
 import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.data.remote.request.LoginRequest
 import com.farsheel.mypos.data.remote.response.LoginResponse
-import com.farsheel.mypos.data.work.SyncWorkManager
 import com.farsheel.mypos.util.Event
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
-import java.util.concurrent.TimeUnit
 
 
 class LoginViewModel(application: Application) : BaseViewModel(application) {
@@ -51,7 +48,7 @@ class LoginViewModel(application: Application) : BaseViewModel(application) {
                 override fun onSuccess(t: LoginResponse) {
                     if (t.status) {
                         PreferenceManager.setUserSession(getApplication(), t)
-                        scheduleWork()
+                        scheduleSyncWork()
                         _loginSuccess.value = Event(true)
                     } else {
                         _errorMessage.postValue(Event(t.message))
