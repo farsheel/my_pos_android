@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.view.inputmethod.InputMethodManager
 import java.text.NumberFormat
+import java.text.SimpleDateFormat
 import java.util.*
 
 
@@ -22,6 +23,15 @@ class Util {
             if (activity.currentFocus != null) {
                 imm.hideSoftInputFromWindow(activity.currentFocus?.windowToken, 0)
             }
+        }
+
+        fun getDateTimeFromEpochLongOfSeconds(epoch: Long): String? {
+            val formatter = SimpleDateFormat.getDateTimeInstance()
+            // Create a calendar object that will convert the date and time value
+            // in milliseconds to date.
+            val calendar = Calendar.getInstance()
+            calendar.timeInMillis = epoch
+            return formatter.format(calendar.time)
         }
     }
 }

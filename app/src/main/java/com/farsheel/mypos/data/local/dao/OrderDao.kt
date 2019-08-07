@@ -22,6 +22,10 @@ interface OrderDao {
     @Query("SELECT * FROM OrderDetail ORDER BY OrderId")
     fun getAllPaged(): DataSource.Factory<Int, OrderDetailEntity>
 
+    @Query("SELECT * FROM OrderDetail WHERE OrderId LIKE :search ORDER BY OrderId")
+    fun getAllPaged(search: String): DataSource.Factory<Int, OrderDetailEntity>
+
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(orderDetailEntity: OrderDetailEntity): Single<Long>
 
@@ -34,7 +38,7 @@ interface OrderDao {
     // OrderItems
 
     @Query("SELECT * FROM OrderItem WHERE OrderId = :id")
-    fun findOrderItemsByOrderId(id: Long):LiveData<List<OrderItemEntity>>
+    fun findOrderItemsByOrderId(id: Long): LiveData<List<OrderItemEntity>>
 
     @Query("SELECT * FROM OrderItem WHERE OrderId = :orderId ORDER BY OrderId")
     fun getAllOrderItemsPaged(orderId: Long): DataSource.Factory<Int, OrderItemEntity>

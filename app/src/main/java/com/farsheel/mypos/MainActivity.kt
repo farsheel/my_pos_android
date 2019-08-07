@@ -50,17 +50,6 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
     }
 
-    private fun doPrint() {
-
-        var printables = ArrayList<Printable>()
-        var printable = TextPrintable.Builder()
-            .setText("Hello World")
-        printables.add(printable.build())
-        Printooth.printer().print(printables)
-
-    }
-
-
 
     private fun setupNavigation() {
 
@@ -100,6 +89,7 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         when (p0.itemId) {
             R.id.action_nav_products -> navController.navigate(R.id.action_homeFragment_to_productListFragment)
             R.id.action_nav_categories -> navController.navigate(R.id.action_homeFragment_to_categoryListFragment)
+            R.id.action_nav_orders -> navController.navigate(R.id.action_homeFragment_to_orderHistoryFragment)
         }
         return true
     }

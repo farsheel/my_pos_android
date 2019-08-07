@@ -46,6 +46,8 @@
     <string name="password">Password</string>
     <string name="login">Login</string>
     <string name="send_email_receipt">Send email receipt</string>
+    <string name="order_no">Order #%s</string>
+    <string name="search_order">Search Order</string>
 
 
 </resources>
