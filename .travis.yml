@@ -1,22 +1,20 @@
 language: android
-dist: trusty
+
 android:
   components:
+    - build-tools-28.0.2
+    - android-28
     - tools
     - platform-tools
-    - build-tools-29.0.0
-    - android-29
-    - extra-android-support
     - extra-android-m2repository
-    - extra-google-m2repository
-
-    # Additional components
-    #- extra-google-google_play_services
-    #- addon-google_apis-google-19
-
-    # Specify at least one system image, if you need to run emulator(s) during your tests
-    #- sys-img-armeabi-v7a-android-19
-    #- sys-img-x86-android-17
-
   licenses:
-    - '.+'
+    - 'android-sdk-preview-license-.+'
+    - 'android-sdk-license-.+'
+    - 'google-gdk-license-.+'
+
+before_install:
+  - yes | sdkmanager "platforms;android-28"
+  - chmod +x gradlew
+
+script:
+  - ./gradlew clean build
