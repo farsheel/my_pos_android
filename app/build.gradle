@@ -81,7 +81,7 @@ dependencies {
 
     //Glide
     implementation 'com.github.bumptech.glide:glide:4.9.0'
-    annotationProcessor 'com.github.bumptech.glide:compiler:4.9.0'
+    kapt 'com.github.bumptech.glide:compiler:4.9.0'
 
     //room
     def room_version = "2.1.0" // 2.1.0 for latest stable version

@@ -142,7 +142,7 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
         work.setConstraints(constraints)
         val data = Data.Builder()
 //Add parameter in Data class. just like bundle. You can also add Boolean and Number in parameter.
-        data.putString("file_path", image?.value.toString())
+        data.putString("file_path", image.value.toString())
         data.putString("product_id", itemId.toString())
 //Set Input Data
         work.setInputData(data.build())
