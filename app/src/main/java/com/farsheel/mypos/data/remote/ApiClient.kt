@@ -26,7 +26,7 @@ class ApiClient {
                         .addInterceptor(HttpLoggingInterceptor().apply {
                             level = HttpLoggingInterceptor.Level.BODY
                         })
-                        .addInterceptor(HandleAuthExpiration(application))
+                        .addInterceptor(HandleAuthExpiration())
                         .addInterceptor(HeaderInterceptor(application))
                         .build()
                 )
@@ -36,7 +36,7 @@ class ApiClient {
                 .build()
         }
 
-        class HandleAuthExpiration(application: Context) : Interceptor {
+        class HandleAuthExpiration : Interceptor {
             override fun intercept(chain: Interceptor.Chain): Response {
                 val original = chain.request()
 
