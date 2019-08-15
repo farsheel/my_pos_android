@@ -16,6 +16,7 @@ import androidx.navigation.NavDeepLinkBuilder
 import androidx.work.Worker
 import androidx.work.WorkerParameters
 import com.farsheel.mypos.R
+import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.remote.ApiClient
 import okhttp3.MediaType
 import okhttp3.MultipartBody
@@ -26,10 +27,10 @@ import java.io.FileInputStream
 import java.io.IOException
 
 
-class ProductImageUploadWork(context: Context, workerParams: WorkerParameters) :
+class ProductImageUploadWork(val context: Context, workerParams: WorkerParameters) :
     Worker(context, workerParams) {
 
-    private val notificationId: Int  = System.currentTimeMillis().toInt()
+    private val notificationId: Int = System.currentTimeMillis().toInt()
     private lateinit var mNotificationManager: NotificationManager
     private lateinit var mBuilder: NotificationCompat.Builder
 
@@ -42,7 +43,7 @@ class ProductImageUploadWork(context: Context, workerParams: WorkerParameters) :
             override fun onProgressUpdate(percentage: Int) {
                 Log.d("ProductImageUploadWork", percentage.toString())
                 mBuilder.setProgress(100, percentage, false)
-                mNotificationManager.notify(notificationId,mBuilder.build())
+                mNotificationManager.notify(notificationId, mBuilder.build())
 
             }
 
@@ -53,7 +54,7 @@ class ProductImageUploadWork(context: Context, workerParams: WorkerParameters) :
                     .setDestination(R.id.productListFragment)
                     .createPendingIntent()
                 mBuilder.setContentIntent(pendingIntent)
-                mNotificationManager.notify(notificationId,mBuilder.build())
+                mNotificationManager.notify(notificationId, mBuilder.build())
             }
 
             override fun onFinish() {
@@ -70,13 +71,16 @@ class ProductImageUploadWork(context: Context, workerParams: WorkerParameters) :
         val filePart =
             MultipartBody.Part.createFormData("product_image", file.name, progressRequestBody)
 
-        val imageUpload = inputData.getString("product_id")?.let {
+        inputData.getString("product_id")?.let {
             ApiClient.getApiService(applicationContext).uploadProductImage(
                 it, filePart
-            ).subscribe()
+            ).subscribe { product ->
+                if (product.status) {
+                    AppDatabase.invoke(context).productDao().insert(product.data).subscribe()
+                }
+            }
         }
 
-        imageUpload?.dispose()
 
         return Result.success()
     }
