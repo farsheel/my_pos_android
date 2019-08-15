@@ -4,6 +4,7 @@ import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.farsheel.mypos.data.local.dao.CartDao
 import com.farsheel.mypos.data.local.dao.CategoryDao
 import com.farsheel.mypos.data.local.dao.OrderDao
@@ -35,5 +36,18 @@ abstract class AppDatabase : RoomDatabase() {
             context,
             AppDatabase::class.java, "my-pos.db"
         ).fallbackToDestructiveMigration().build()
+    }
+
+    fun clearAndResetAllTables() {
+
+        // reset all auto-incrementalValues
+        val query = SimpleSQLiteQuery("DELETE FROM sqlite_sequence")
+
+        instance?.runInTransaction {
+            instance?.clearAllTables()
+            instance?.query(query)
+
+        }
+
     }
 }

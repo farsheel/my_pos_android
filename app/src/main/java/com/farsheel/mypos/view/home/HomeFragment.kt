@@ -1,6 +1,5 @@
 package com.farsheel.mypos.view.home
 
-import android.annotation.SuppressLint
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
@@ -15,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.farsheel.mypos.R
 import com.farsheel.mypos.data.model.ProductEntity
+import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.databinding.HomeFragmentBinding
 import com.farsheel.mypos.util.MyBounceInterpolator
 import com.farsheel.mypos.util.SpacesItemDecoration
@@ -180,17 +180,26 @@ class HomeFragment : Fragment() {
         ) {
             private var product: ProductEntity? = null
 
-            @SuppressLint("SetTextI18n")
             fun bindTo(product: ProductEntity?) {
                 this.product = product
                 if (product != null) {
                     itemView.itemTv.text = product.name
                     itemView.itemTotalPriceTv.text = Util.currencyLocale(product.price)
-                }
-                itemView.let {
-                    Glide.with(it)
-                        .load("https://i0.wp.com/www.emibaba.com/wp-content/uploads/2018/01/Redmi-Note-6-Pro-black-1.jpg")
-                        .into(itemView.itemIv)
+                    if (product.image.isNullOrEmpty()) {
+                        itemView.itemIv.visibility = View.GONE
+                        itemView.let {
+                            Glide.with(it)
+                                .clear(itemView.itemIv)
+                        }
+                    } else {
+                        itemView.itemIv.visibility = View.VISIBLE
+                        itemView.let {
+                            Glide.with(it)
+                                .load(ApiClient.IMAGE_URL + product.image)
+                                .into(itemView.itemIv)
+                        }
+
+                    }
                 }
             }
         }

@@ -37,6 +37,8 @@
             android:id="@+id/loginFragment"
             android:name="com.farsheel.mypos.view.login.LoginFragment"
             android:label="login_fragment"
+            app:popUpTo="@+id/main_navigation"
+            app:popUpToInclusive="true"
             tools:layout="@layout/login_fragment" >
         <action
                 android:id="@+id/action_loginFragment_to_homeFragment"

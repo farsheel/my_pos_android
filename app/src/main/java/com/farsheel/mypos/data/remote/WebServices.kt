@@ -7,10 +7,8 @@ import com.farsheel.mypos.data.remote.request.LoginRequest
 import com.farsheel.mypos.data.remote.request.OrderRequest
 import com.farsheel.mypos.data.remote.response.*
 import io.reactivex.Single
-import retrofit2.http.Body
-import retrofit2.http.GET
-import retrofit2.http.POST
-import retrofit2.http.Query
+import okhttp3.MultipartBody
+import retrofit2.http.*
 
 interface WebServices {
     @POST("api/login")
@@ -33,4 +31,8 @@ interface WebServices {
 
     @POST("api/send_email_receipt")
     fun sendEmailReceipt(@Body emailReceiptRequest: EmailReceiptRequest): Single<GenericResponse>
+
+    @Multipart
+    @POST("api/product/upload_image")
+    fun uploadProductImage(@Query("product_id") productId:String, @Part file: MultipartBody.Part): Single<ProductCreateResponse>
 }

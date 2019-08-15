@@ -1,6 +1,5 @@
 package com.farsheel.mypos.data.local
 
-import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
 import com.farsheel.mypos.data.remote.response.LoginResponse
@@ -35,6 +34,15 @@ class PreferenceManager {
             val mySharedPreferences: SharedPreferences =
                 application.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
             return mySharedPreferences.getString(PREF_TOKEN, "")
+        }
+
+        fun clear(context: Context) {
+            val mySharedPreferences: SharedPreferences =
+                context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE)
+            val myEditor: SharedPreferences.Editor = mySharedPreferences.edit()
+            myEditor.clear()
+            myEditor.apply()
+
         }
     }
 }

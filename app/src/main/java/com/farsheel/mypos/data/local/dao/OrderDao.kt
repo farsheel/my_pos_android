@@ -22,7 +22,7 @@ interface OrderDao {
     @Query("SELECT * FROM OrderDetail ORDER BY OrderId")
     fun getAllPaged(): DataSource.Factory<Int, OrderDetailEntity>
 
-    @Query("SELECT * FROM OrderDetail WHERE OrderId LIKE :search ORDER BY OrderId")
+    @Query("SELECT * FROM OrderDetail WHERE OrderId LIKE :search ORDER BY OrderId DESC")
     fun getAllPaged(search: String): DataSource.Factory<Int, OrderDetailEntity>
 
 

@@ -1,40 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.cardview.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="150dp"
+        app:cardBackgroundColor="@color/drawerBackground"
+        app:contentPaddingBottom="@dimen/padding_small">
 
     <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@color/drawerBackground"
+            android:gravity="center"
             android:orientation="vertical">
 
         <androidx.appcompat.widget.AppCompatImageView
                 android:id="@+id/itemIv"
                 android:layout_width="match_parent"
                 android:layout_height="100dp"
-                android:background="@android:color/white"
-                android:layout_gravity="center" />
+                android:layout_gravity="center"
+                android:scaleType="centerCrop"
+                android:background="@android:color/white" />
 
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/itemTv"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:gravity="center"
                 android:paddingTop="@dimen/padding_small"
-                android:text="Mobile 1"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                tools:text="Mobile 1" />
 
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/itemTotalPriceTv"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
                 android:gravity="center"
-                android:paddingBottom="@dimen/padding_small"
-                android:text="$1.00"
                 android:textAppearance="@style/TextAppearance.AppCompat.Caption"
-                android:textColor="@android:color/white" />
+                android:textColor="@android:color/white"
+                tools:text="$1.00" />
     </LinearLayout>
 
 </androidx.cardview.widget.CardView>

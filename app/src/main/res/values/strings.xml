@@ -48,6 +48,9 @@
     <string name="send_email_receipt">Send email receipt</string>
     <string name="order_no">Order #%s</string>
     <string name="search_order">Search Order</string>
+    <string name="uploading">Uploading</string>
+    <string name="in_progress">In progress</string>
+    <string name="your_session_is_expired">Your sesion is expired</string>
 
 
 </resources>

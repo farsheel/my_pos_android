@@ -2,17 +2,17 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
 
     <item
-            android:id="@+id/action_nav_products"
+            android:id="@+id/productListFragment"
             android:title="@string/products"
             android:icon="@drawable/ic_view_list_white_24dp"/>
 
     <item
-            android:id="@+id/action_nav_categories"
+            android:id="@+id/categoryListFragment"
             android:title="@string/categories"
             android:icon="@drawable/ic_category_white_24dp"/>
 
     <item
-            android:id="@+id/action_nav_orders"
+            android:id="@+id/orderHistoryFragment"
             android:title="@string/order_history"
             android:icon="@drawable/ic_history_white_24dp"/>
 

@@ -70,6 +70,7 @@
                 android:gravity="center"
                 android:onClick="@{()-> viewmodel.onSelectCheque()}"
                 android:padding="@dimen/padding_small"
+                android:visibility="gone"
                 android:text="@string/cheque"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"

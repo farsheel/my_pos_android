@@ -17,5 +17,6 @@ data class ProductEntity(
     @SerializedName("product_upc") @ColumnInfo(name = "ItemUPC") val upc: String,
     @SerializedName("product_price") @ColumnInfo(name = "ItemPrice") val price: Double,
     @SerializedName("product_cat_id") @ColumnInfo(name = "ItemCategory") var category: String = "1",
-    @SerializedName("product_description") @ColumnInfo(name = "ItemDescription") val description: String
+    @SerializedName("product_description") @ColumnInfo(name = "ItemDescription") val description: String,
+    @SerializedName("product_image") @ColumnInfo(name = "ItemImage") val image: String? = ""
 )

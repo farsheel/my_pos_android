@@ -1,5 +1,6 @@
 package com.farsheel.mypos.view.product.view
 
+import android.content.Intent
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,6 +13,9 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
+import com.bumptech.glide.Glide
+import com.esafirm.imagepicker.features.ImagePicker
+import com.esafirm.imagepicker.features.ReturnMode
 import com.farsheel.mypos.R
 import com.farsheel.mypos.data.model.CategoryEntity
 import com.farsheel.mypos.databinding.AddEditProductFragmentBinding
@@ -20,6 +24,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.add_edit_product_fragment.*
 import kotlinx.android.synthetic.main.add_edit_product_fragment.view.*
+import java.io.File
 
 
 class AddEditProductFragment : Fragment() {
@@ -75,6 +80,16 @@ class AddEditProductFragment : Fragment() {
             }
         })
 
+        viewModel.selectImage.observe(this, Observer {
+            it.getContentIfNotHandled()?.let {
+                openImagePicker()
+            }
+        })
+
+        viewModel.image.observe(this, Observer {
+            Glide.with(this).load(it).into(productImageIv)
+        })
+
         viewModel.snackbarMessage.observe(this, Observer { it ->
             it.getContentIfNotHandled().let {
                 if (it != null) {
@@ -96,6 +111,30 @@ class AddEditProductFragment : Fragment() {
         })
 
         observeChanges()
+    }
+
+    private fun openImagePicker() {
+
+        ImagePicker.create(this)
+            .returnMode(ReturnMode.ALL) // set whether pick and / or camera action should return immediate result or not.
+            .folderMode(true) // folder mode (false by default)
+            .toolbarFolderTitle("Folder") // folder selection title
+            .toolbarImageTitle("Tap to select") // image selection title
+            .toolbarArrowColor(Color.BLACK) // Toolbar 'up' arrow color
+            .includeVideo(false) // Show video on image picker
+            .single() // single mode
+            .theme(R.style.ImagePickerTheme)
+            .showCamera(true) // show camera or not (true by default)
+            .enableLog(false) // disabling log
+            .start() // start image picker activity with request
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
+            val image = ImagePicker.getFirstImageOrNull(data)
+            viewModel.image.postValue(File(image.path))
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     private fun observeChanges() {
