@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.farsheel.mypos.R
 import com.farsheel.mypos.data.model.ProductEntity
+import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.util.Util
 import kotlinx.android.synthetic.main.layout_product_list_item.view.*
 
@@ -60,12 +61,15 @@ class ProductAdapter :
             if (product != null) {
                 itemView.itemTv.text = product.name
                 itemView.itemTotalPriceTv.text = Util.currencyLocale(product.price)
+
+                itemView.let {
+                    Glide.with(it)
+                        .load(ApiClient.IMAGE_URL + product.image)
+                        .into(itemView.itemIv)
+
+                }
             }
-            itemView.let {
-                Glide.with(it)
-                    .load("https://i0.wp.com/www.emibaba.com/wp-content/uploads/2018/01/Redmi-Note-6-Pro-black-1.jpg")
-                    .into(itemView.itemIv)
-            }
+
         }
     }
 }

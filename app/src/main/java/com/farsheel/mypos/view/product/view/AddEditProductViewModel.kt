@@ -7,6 +7,7 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
+import androidx.work.*
 import com.farsheel.mypos.R
 import com.farsheel.mypos.base.BaseViewModel
 import com.farsheel.mypos.data.local.AppDatabase
@@ -15,6 +16,8 @@ import com.farsheel.mypos.data.model.FeedbackMessage
 import com.farsheel.mypos.data.model.ProductEntity
 import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.data.remote.response.ProductCreateResponse
+import com.farsheel.mypos.data.work.ProductImageUploadWork
+import com.farsheel.mypos.data.work.SyncWorkManager
 import com.farsheel.mypos.util.Event
 import com.farsheel.mypos.view.category.view.AddEditCategoryViewModel
 import io.reactivex.SingleObserver
@@ -23,12 +26,14 @@ import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
+import java.io.File
 
 class AddEditProductViewModel(application: Application) : BaseViewModel(application) {
 
     companion object {
         private val TAG = AddEditCategoryViewModel::class.java.simpleName
     }
+
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -50,12 +55,16 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
     private val _showCatSpinner = MutableLiveData<Event<Boolean>>()
     val showCatSpinner: LiveData<Event<Boolean>> get() = _showCatSpinner
 
+    private val _selectImage = MutableLiveData<Event<Boolean>>()
+    val selectImage: LiveData<Event<Boolean>> get() = _selectImage
+
     val itemUpc = MutableLiveData<String>()
     val itemName = MutableLiveData<String>()
     val itemId = MutableLiveData<Long>()
     val price = MutableLiveData<String>()
     val category = MutableLiveData<String>()
     val categoryString = MutableLiveData<String>()
+    val image  = MutableLiveData<File?>()
 
     val description = MutableLiveData<String>()
 
@@ -91,7 +100,8 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
                 category = category.value!!,
                 description = description.value.orEmpty(),
                 name = itemName.value.orEmpty(),
-                price = if (price.value.isNullOrEmpty()) 0.0 else price.value!!.toDouble()
+                price = if (price.value.isNullOrEmpty()) 0.0 else price.value!!.toDouble(),
+                image = ""
             )
 
             setBusy(true)
@@ -121,6 +131,22 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
     override fun onCleared() {
         super.onCleared()
         compositeDisposable.dispose()
+    }
+
+    private fun uploadImage(itemId: Long?) {
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+        val work = OneTimeWorkRequestBuilder<ProductImageUploadWork>()
+        work.addTag(SyncWorkManager::class.java.simpleName)
+        work.setConstraints(constraints)
+        val data = Data.Builder()
+//Add parameter in Data class. just like bundle. You can also add Boolean and Number in parameter.
+        data.putString("file_path", image?.value.toString())
+        data.putString("product_id", itemId.toString())
+//Set Input Data
+        work.setInputData(data.build())
+        WorkManager.getInstance(getApplication()).enqueue(work.build())
     }
 
     fun validate(notify: Boolean): Boolean {
@@ -159,6 +185,9 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
     }
 
     private fun saveProduct(productEntity: ProductEntity) {
+        if (image.value != null) {
+            uploadImage(productEntity.itemId)
+        }
 
         AppDatabase.invoke(getApplication()).productDao().insert(productEntity)
             .subscribeOn(Schedulers.io())
@@ -191,6 +220,10 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
 
     fun showCategories() {
         _showCatSpinner.postValue(Event(true))
+    }
+
+    fun selectImage() {
+        _selectImage.postValue(Event(true))
     }
 
     private fun setBusy(isBusy: Boolean) {

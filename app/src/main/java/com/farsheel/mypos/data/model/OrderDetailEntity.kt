@@ -5,7 +5,7 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 
 @Entity(tableName = "OrderDetail")
-class OrderDetailEntity(
+data class OrderDetailEntity(
     @PrimaryKey @ColumnInfo(name = "OrderId", index = true) var orderId: Long,
     @ColumnInfo(name = "CustomerId") val customerId: Long,
     @ColumnInfo(name = "OrderTotal") val orderTotal: Double,

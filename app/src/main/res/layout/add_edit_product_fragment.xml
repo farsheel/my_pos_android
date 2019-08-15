@@ -27,12 +27,23 @@
                     android:orientation="vertical"
                     android:padding="@dimen/padding_large">
 
+                <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/productImageIv"
+                        android:layout_width="80dp"
+                        android:layout_height="80dp"
+                        android:layout_gravity="center"
+                        android:scaleType="centerCrop"
+                        android:background="@drawable/bg_corner_radius_rectangle"
+                        android:onClick="@{()-> viewmodel.selectImage()}"
+                        />
+
                 <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/upcLayout"
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/upc"
+                        android:layout_marginTop="@dimen/margin_small"
                         app:errorTextString="@{viewmodel.upcError}">
 
                     <com.google.android.material.textfield.TextInputEditText
