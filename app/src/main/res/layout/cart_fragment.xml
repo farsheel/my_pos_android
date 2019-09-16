@@ -37,7 +37,7 @@
                     android:id="@+id/totalsLayout"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:background="@color/drawerBackground"
+                    android:background="@color/darkColor"
                     android:orientation="vertical"
                     android:paddingStart="@dimen/padding_large"
                     android:paddingTop="@dimen/padding_small"

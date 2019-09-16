@@ -65,7 +65,7 @@ class CashPaymentFragment : Fragment() {
                 val dialog = builder.show()
                 context?.let {
                     dialog.getButton(AlertDialog.BUTTON_NEUTRAL)
-                        .setBackgroundColor(ContextCompat.getColor(it, R.color.drawerBackground))
+                        .setBackgroundColor(ContextCompat.getColor(it, R.color.darkColor))
                 }
             }
         })

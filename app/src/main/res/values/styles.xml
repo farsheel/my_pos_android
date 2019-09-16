@@ -10,7 +10,7 @@
     <style name="AppTheme.NoActionBar" parent="AppTheme">
         <item name="windowActionBar">false</item>
         <item name="windowNoTitle">true</item>
-        <item name="colorSecondary">@color/drawerBackground</item>
+        <item name="colorSecondary">@color/darkColor</item>
         <item name="colorOnSecondary">@android:color/white</item>
         <item name="android:fontFamily">@font/quicksand_regular</item>
     </style>
@@ -20,7 +20,7 @@
     <style name="AppTheme.PopupOverlay" parent="ThemeOverlay.AppCompat.Light" />
 
     <style name="MaterialButtonPrimary" parent="Theme.MaterialComponents">
-        <item name="colorPrimary">@color/drawerBackground</item>
+        <item name="colorPrimary">@color/darkColor</item>
         <item name="android:layout_marginBottom">0dp</item>
         <item name="android:padding">@dimen/padding_large</item>
         <item name="android:textAllCaps">false</item>
@@ -35,7 +35,7 @@
 
     <style name="ImagePickerTheme" parent="ef_BaseTheme">
         <item name="colorPrimary">@android:color/white</item>
-        <item name="colorPrimaryDark">@color/drawerBackground</item>
-        <item name="colorAccent">@color/drawerBackground</item>
+        <item name="colorPrimaryDark">@color/darkColor</item>
+        <item name="colorAccent">@color/darkColor</item>
     </style>
 </resources>

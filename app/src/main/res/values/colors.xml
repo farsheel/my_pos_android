@@ -4,7 +4,7 @@
     <color name="colorPrimaryDark">#00574B</color>
     <color name="colorAccent">#444e5e</color>
     <color name="rippleTab">#353b48</color>
-    <color name="drawerBackground">#444e5e</color>
+    <color name="darkColor">#444e5e</color>
     <color name="drawerCheckedBackground">#535d6e</color>
     <color name="redUi">#e74c3c</color>
     <color name="greenUi">#27ae60</color>
