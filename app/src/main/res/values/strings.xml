@@ -51,6 +51,8 @@
     <string name="uploading">Uploading</string>
     <string name="in_progress">In progress</string>
     <string name="your_session_is_expired">Your sesion is expired</string>
+    <string name="logout">Logout</string>
+    <string name="are_you_sure_want_to_logout">Are you sure want to logout?</string>
 
 
 </resources>
