@@ -7,15 +7,19 @@ import java.text.NumberFormat
 import java.text.SimpleDateFormat
 import java.util.*
 
-
+//java.text.NumberFormat getPercentInstance(
 class Util {
     companion object {
         @JvmStatic
         fun currencyLocale(value: Double): String {
-            val formatter = NumberFormat.getCurrencyInstance(Locale("en", "IN"))
+            val formatter = NumberFormat.getCurrencyInstance(Locale("en", "GH"))
             return formatter.format(value)
         }
 
+        fun PercentLocale(value: Double): String {
+            val formatter = NumberFormat.getPercentInstance(Locale("en", "GH"))
+            return formatter.format(value)
+        }
 
         fun hideKeyboard(activity: Activity) {
             val imm =

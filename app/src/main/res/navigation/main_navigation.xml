@@ -148,6 +148,50 @@
                 app:exitAnim="@anim/nav_default_exit_anim"
                 app:popEnterAnim="@anim/nav_default_pop_enter_anim"
                 app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+                android:id="@+id/action_paymentTenderFragment_to_airtelPaymentFragment"
+                app:destination="@id/airtelPaymentFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+                android:id="@+id/action_paymentTenderFragment_to_mtnPaymentFragment"
+                app:destination="@id/mtnPaymentFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+                android:id="@+id/action_paymentTenderFragment_to_vodafonePaymentFragment"
+                app:destination="@id/vodafonePaymentFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+                android:id="@+id/action_paymentTenderFragment_to_gmoneyPaymentFragment"
+                app:destination="@id/gmoneyPaymentFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+                android:id="@+id/action_paymentTenderFragment_to_masterpassPaymentFragment"
+                app:destination="@id/masterpassPaymentFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+        <action
+                android:id="@+id/action_paymentTenderFragment_to_visaPaymentFragment"
+                app:destination="@id/visaPaymentFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_exit_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+
+
     </fragment>
     <fragment
             android:id="@+id/cashPaymentFragment"
@@ -163,6 +207,92 @@
                 app:popExitAnim="@anim/nav_default_pop_exit_anim"
                 app:popUpTo="@+id/homeFragment" />
     </fragment>
+
+    <fragment
+            android:id="@+id/airtelPaymentFragment"
+            android:name="com.farsheel.mypos.view.payment.airtel.AirtelPaymentFragment"
+            android:label="Airtel-tigo"
+            tools:layout="@layout/pay_airtel_payment_fragment"            >
+        <action
+                android:id="@+id/action_airtelPaymentFragment_to_paymentCompletedFragment"
+                app:destination="@id/paymentCompletedFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_enter_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpTo="@+id/homeFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/mtnPaymentFragment"
+            android:name="com.farsheel.mypos.view.payment.mtn.MtnPaymentFragment"
+            android:label="MTN MoMo"
+            tools:layout="@layout/pay_mtn_payment_fragment"            >
+        <action
+                android:id="@+id/action_mtnPaymentFragment_to_paymentCompletedFragment"
+                app:destination="@id/paymentCompletedFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_enter_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpTo="@+id/homeFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/vodafonePaymentFragment"
+            android:name="com.farsheel.mypos.view.payment.vodafone.VodafonePaymentFragment"
+            android:label="Vodafone Cash"
+            tools:layout="@layout/pay_vodafone_payment_fragment">
+        <action
+                android:id="@+id/action_vodafonePaymentFragment_to_paymentCompletedFragment"
+                app:destination="@id/paymentCompletedFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_enter_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpTo="@+id/homeFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/gmoneyPaymentFragment"
+            android:name="com.farsheel.mypos.view.payment.gmoney.GmoneyPaymentFragment"
+            android:label="G-Money"
+            tools:layout="@layout/pay_gmoney_payment_fragment"            >
+        <action
+                android:id="@+id/action_gmoneyPaymentFragment_to_paymentCompletedFragment"
+                app:destination="@id/paymentCompletedFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_enter_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpTo="@+id/homeFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/masterpassPaymentFragment"
+            android:name="com.farsheel.mypos.view.payment.masterpass.MasterpassPaymentFragment"
+            android:label="Masterpass QR"
+            tools:layout="@layout/pay_masterpass_payment_fragment"            >
+        <action
+                android:id="@+id/action_masterpassPaymentFragment_to_paymentCompletedFragment"
+                app:destination="@id/paymentCompletedFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_enter_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpTo="@+id/homeFragment" />
+    </fragment>
+    <fragment
+            android:id="@+id/visaPaymentFragment"
+            android:name="com.farsheel.mypos.view.payment.visa.VisaPaymentFragment"
+            android:label="mVisa QR"
+            tools:layout="@layout/pay_visa_payment_fragment"            >
+        <action
+                android:id="@+id/action_visaPaymentFragment_to_paymentCompletedFragment"
+                app:destination="@id/paymentCompletedFragment"
+                app:enterAnim="@anim/nav_default_enter_anim"
+                app:exitAnim="@anim/nav_default_enter_anim"
+                app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+                app:popExitAnim="@anim/nav_default_pop_exit_anim"
+                app:popUpTo="@+id/homeFragment" />
+    </fragment>
+
     <fragment
             android:id="@+id/paymentCompletedFragment"
             android:name="com.farsheel.mypos.view.payment.completed.PaymentCompletedFragment"
@@ -174,7 +304,7 @@
         <argument
                 android:name="amountPaid"
                 app:argType="float"
-                 />
+                />
         <argument
                 android:name="balance"
                 app:argType="float"

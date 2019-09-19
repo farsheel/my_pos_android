@@ -46,19 +46,18 @@
                 android:id="@+id/cashTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_large"
                 android:background="@drawable/bg_corner_radius_rectangle"
-                android:drawableTop="@drawable/ic_cash_96dp"
+                android:drawableTop="@drawable/pay_cash_72"
                 android:gravity="center"
                 android:onClick="@{()-> viewmodel.onSelectCash()}"
                 android:padding="@dimen/padding_small"
                 android:text="@string/cash"
                 app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toStartOf="@+id/chequeTv"
-                app:layout_constraintHorizontal_bias="0.5"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/amountTv"
-                app:layout_constraintVertical_bias=".1" />
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.461" />
 
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/chequeTv"
@@ -68,7 +67,7 @@
                 android:background="@drawable/bg_corner_radius_rectangle"
                 android:drawableTop="@drawable/ic_cheque_96dp"
                 android:gravity="center"
-                android:onClick="@{()-> viewmodel.onSelectCheque()}"
+                android:onClick="@{()-> viewmodel.onSelectAirtel()}"
                 android:padding="@dimen/padding_small"
                 android:visibility="gone"
                 android:text="@string/cheque"
@@ -79,7 +78,93 @@
                 app:layout_constraintTop_toBottomOf="@id/amountTv"
                 app:layout_constraintVertical_bias=".1" />
 
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/momoTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_corner_radius_rectangle"
+                android:drawableTop="@drawable/pay_masterpass_qr_72"
+                android:gravity="center"
+                android:onClick="@{()-> viewmodel.onSelectMasterpass()}"
+                android:padding="@dimen/padding_small"
+                android:text="@string/pay_masterpass_qr"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.385"
+                app:layout_constraintStart_toEndOf="@+id/cashTv"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.457" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/visaTv"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_corner_radius_rectangle"
+                android:drawableTop="@drawable/pay_visa_qr_72"
+                android:gravity="center"
+                android:onClick="@{()-> viewmodel.onSelectVisa()}"
+                android:padding="@dimen/padding_small"
+                android:text="@string/pay_visa_qr"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/cashTv"
+                app:layout_constraintHorizontal_bias="0.643"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintVertical_bias="0.468" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/vfcash"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_corner_radius_rectangle"
+                android:drawableTop="@drawable/pay_vodafone_72"
+                android:gravity="center"
+                android:onClick="@{()-> viewmodel.onSelectVodafone()}"
+                android:padding="@dimen/padding_small"
+                android:text="@string/pay_vodafone_cash"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toStartOf="@+id/gmoney"
+                app:layout_constraintHorizontal_bias="0.643"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/visaTv"
+                app:layout_constraintVertical_bias="0.256" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/gmoney"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_corner_radius_rectangle"
+                android:drawableTop="@drawable/pay_gmoney_72"
+                android:gravity="center"
+                android:onClick="@{()-> viewmodel.onSelectGmoney()}"
+                android:padding="@dimen/padding_small"
+                android:text="@string/pay_gmoney"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.498"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/cashTv"
+                app:layout_constraintVertical_bias="0.255" />
+
+        <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/paymtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@drawable/bg_corner_radius_rectangle"
+                android:drawableTop="@drawable/pay_mtn_72"
+                android:gravity="center"
+                android:onClick="@{()-> viewmodel.onSelectMtn()}"
+                android:padding="@dimen/padding_small"
+                android:text="@string/pay_mtn"
+                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.394"
+                app:layout_constraintStart_toEndOf="@+id/gmoney"
+                app:layout_constraintTop_toBottomOf="@+id/momoTv"
+                app:layout_constraintVertical_bias="0.254" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </layout>

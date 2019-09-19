@@ -19,6 +19,7 @@ import com.farsheel.mypos.R
 import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.remote.ApiClient
 import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import okio.BufferedSink
@@ -95,7 +96,7 @@ class ProductImageUploadWork(val context: Context, workerParams: WorkerParameter
         }
 
         override fun contentType(): MediaType? {
-            return MediaType.parse("*/*")
+      return "*/*".toMediaTypeOrNull()
         }
 
 

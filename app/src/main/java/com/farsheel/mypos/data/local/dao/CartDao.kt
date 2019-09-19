@@ -9,6 +9,7 @@ import androidx.room.Query
 import com.farsheel.mypos.data.model.CartEntity
 import io.reactivex.Single
 
+
 @Dao
 interface CartDao {
     @Query("SELECT * FROM Cart WHERE id = :id")
@@ -26,6 +27,14 @@ interface CartDao {
 
     @Query("SELECT SUM(Quantity*ProductPrice) FROM Cart")
     fun getCartTotal(): LiveData<Double>
+
+
+    @Query("SELECT SUM(0.029*Quantity*ProductPrice) FROM Cart")
+    fun getCartVatTotal(): LiveData<Double>
+
+
+    @Query("SELECT SUM((0.029*Quantity*ProductPrice)+(Quantity*ProductPrice)) FROM Cart")
+    fun getCartVatTotalPay(): LiveData<Double>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insert(cartEntity: CartEntity): Single<Long>

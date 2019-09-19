@@ -10,11 +10,11 @@ apply plugin: "androidx.navigation.safeargs.kotlin"
 
 
 android {
-    compileSdkVersion 28
+    compileSdkVersion 29
     defaultConfig {
         applicationId "com.farsheel.mypos"
         minSdkVersion 19
-        targetSdkVersion 28
+        targetSdkVersion 29
         versionCode 1
         versionName "1.0"
         multiDexEnabled true
@@ -34,8 +34,10 @@ android {
     }
 
     buildTypes {
-        def LIVE_URL = "\"https://mypos.farsheel.com\""
-        def LOCAL_URL = "\"http://192.168.43.248:8000\""
+        def LIVE_URL = "\"https://epe.azurewebsites.net\""
+ //       def LIVE_URL = "\"https://mypos.farsheel.com\""
+        def LOCAL_URL = "\"https://epe.azurewebsites.net\""
+ //       def LOCAL_URL = "\"http://192.168.43.248:8000\""
         debug {
             signingConfig signingConfigs.release
             buildConfigField "String", "API_URL", LOCAL_URL
@@ -98,10 +100,10 @@ dependencies {
     implementation "androidx.paging:paging-rxjava2:$paging_version"
 
     //retrofit
-    implementation 'com.squareup.retrofit2:retrofit:2.4.0'
-    implementation 'com.squareup.retrofit2:converter-gson:2.4.0'
-    implementation 'com.squareup.okhttp3:logging-interceptor:3.12.1'
-    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.4.0'
+    implementation 'com.squareup.retrofit2:retrofit:2.6.1'
+    implementation 'com.squareup.retrofit2:converter-gson:2.6.1'
+    implementation 'com.squareup.okhttp3:logging-interceptor:4.2.0'
+    implementation 'com.squareup.retrofit2:adapter-rxjava2:2.6.1'
 
     //work
     def work_version = "2.2.0"

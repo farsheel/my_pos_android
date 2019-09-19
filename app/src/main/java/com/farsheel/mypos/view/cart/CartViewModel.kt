@@ -37,6 +37,11 @@ class CartViewModel(application: Application) : BaseViewModel(application) {
     @Bindable
     val cartSubTotal = AppDatabase.invoke(application).cartDao().getCartTotal()
 
+
+    @Bindable
+    val cartVAT = AppDatabase.invoke(application).cartDao().getCartVatTotal()
+
+
     @Bindable
     val discountApplied : MutableLiveData<Double> = MutableLiveData()
 
@@ -51,6 +56,8 @@ class CartViewModel(application: Application) : BaseViewModel(application) {
             .subscribeOn(Schedulers.io()).subscribe()
 
     }
+
+
 
     fun onClickPay(){
         _onClickPay.postValue(Event(true))

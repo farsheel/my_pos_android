@@ -17,7 +17,8 @@ import retrofit2.converter.gson.GsonConverterFactory
 class ApiClient {
     companion object {
         private const val BASE_URL = BuildConfig.API_URL
-        const val IMAGE_URL = "$BASE_URL/storage/uploads/images/"
+        const val IMAGE_URL = "$BASE_URL/img/storage/app/public/uploads/images/"
+ //       const val IMAGE_URL = "$BASE_URL/storage/uploads/images/"
 
         private fun create(application: Context): Retrofit {
             return Retrofit.Builder()
@@ -41,10 +42,11 @@ class ApiClient {
                 val original = chain.request()
 
                 val request = original.newBuilder()
-                    .method(original.method(), original.body())
+                    .method(original.method, original.body)
                     .build()
                 val response = chain.proceed(request)
-                return if (response.code() == 401) {
+                return if (response.code == 401)
+                {
                     appEventProcessor.onNext(AppEvent.TokenExpired)
                     response
                 } else response

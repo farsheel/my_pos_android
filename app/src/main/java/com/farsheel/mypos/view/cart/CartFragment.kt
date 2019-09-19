@@ -126,6 +126,12 @@ class CartFragment : Fragment() {
         viewModel.cartSubTotal.observe(viewLifecycleOwner, Observer {
             viewModel.notifyPropertyChanged(BR.cartSubTotal)
         })
+
+        viewModel.cartVAT.observe(viewLifecycleOwner, Observer {
+            viewModel.notifyPropertyChanged(BR.cartVAT)
+        })
+
+
         viewModel.discountApplied.observe(viewLifecycleOwner, Observer {
             viewModel.notifyPropertyChanged(BR.discountApplied)
         })
