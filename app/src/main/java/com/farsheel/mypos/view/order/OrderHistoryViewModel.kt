@@ -1,29 +1,18 @@
 package com.farsheel.mypos.view.order
 
-import android.app.Application
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.model.OrderDetailEntity
+import com.farsheel.mypos.data.repository.OrderRepository
 
-class OrderHistoryViewModel(application: Application) : BaseViewModel(application) {
+class OrderHistoryViewModel(private val orderRepository: OrderRepository) : BaseViewModel() {
 
-    var filterTextAll = MutableLiveData<String>()
+    fun getOrderHistory(): LiveData<PagedList<OrderDetailEntity>> {
+        return orderRepository.productList
+    }
+    fun searchOrder(search:String?){
+        orderRepository.filterTextAll.postValue(search)
+    }
 
-    val productList: LiveData<PagedList<OrderDetailEntity>> =
-        Transformations.switchMap(filterTextAll) {
-            if (it.isNullOrEmpty()) {
-                return@switchMap LivePagedListBuilder(
-                    AppDatabase.invoke(getApplication()).orderDao().getAllPaged(), 20
-                ).build()
-            } else {
-                return@switchMap LivePagedListBuilder(
-                    AppDatabase.invoke(getApplication()).orderDao().getAllPaged(it), 20
-                ).build()
-            }
-        }
 }

@@ -1,20 +1,14 @@
 package com.farsheel.mypos.view.payment.tender
 
-import android.app.Application
-import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.AppDatabase
+import com.farsheel.mypos.data.repository.CartRepository
 import com.farsheel.mypos.util.Event
 
-class PaymentTenderViewModel(application: Application) : BaseViewModel(application) {
+class PaymentTenderViewModel(val cartRepository: CartRepository) : BaseViewModel() {
 
-//    @Bindable
-//    val amountToPay = AppDatabase.invoke(application).cartDao().getCartTotal()
-
-    @Bindable
-    val amountToPay = AppDatabase.invoke(application).cartDao().getCartVatTotalPay()
+    val amountToPay = cartRepository.cartVatTotalPay
 
     private val _onSelectCash = MutableLiveData<Event<Boolean>>()
     val onSelectCash: LiveData<Event<Boolean>> get() = _onSelectCash

@@ -6,13 +6,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.farsheel.mypos.R
 import com.farsheel.mypos.databinding.PayVisaPaymentFragmentBinding
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class VisaPaymentFragment : Fragment() {
 
@@ -21,7 +21,7 @@ class VisaPaymentFragment : Fragment() {
     }
 
     private lateinit var binding: PayVisaPaymentFragmentBinding
-    private lateinit var viewModel: VisaPaymentViewModel
+    private val visaPaymentViewModel: VisaPaymentViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,27 +39,19 @@ class VisaPaymentFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(VisaPaymentViewModel::class.java)
-        binding.viewmodel = viewModel
+        binding.viewmodel = visaPaymentViewModel
 
-
-        viewModel.amountToPay.observe(viewLifecycleOwner, Observer {
-            viewModel.amountEntered.postValue(viewModel.amountToPay.value.toString())
-            viewModel.notifyPropertyChanged(BR.amountToPay)
-            viewModel.notifyPropertyChanged(BR.amountEntered)
+        visaPaymentViewModel.amountToPay.observe(viewLifecycleOwner, Observer {
+            visaPaymentViewModel.amountEntered.set(visaPaymentViewModel.amountToPay.value.toString())
         })
 
-        viewModel.amountEntered.observe(viewLifecycleOwner, Observer {
-            viewModel.notifyPropertyChanged(BR.amountEntered)
-        })
-
-        viewModel.lesserAmountEntered.observe(viewLifecycleOwner, Observer { it ->
+        visaPaymentViewModel.lesserAmountEntered.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let {
                 val builder = AlertDialog.Builder(context)
                 builder.setMessage(getString(R.string.entered_a_lesser_amount_message))
                 builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                     dialog.dismiss()
-                    viewModel.amountEntered.value = viewModel.amountToPay.value.toString()
+                    visaPaymentViewModel.amountEntered.set(visaPaymentViewModel.amountToPay.value.toString())
                 }
                 builder.setNeutralButton(getString(R.string.cancel), null)
                 val dialog = builder.show()
@@ -70,11 +62,11 @@ class VisaPaymentFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToCompleted.observe(viewLifecycleOwner, Observer {
+        visaPaymentViewModel.navigateToCompleted.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let { balance ->
-                val action = viewModel.amountToPay.value?.let { it1 ->
+                val action = visaPaymentViewModel.amountToPay.value?.let { it1 ->
                     VisaPaymentFragmentDirections.actionVisaPaymentFragmentToPaymentCompletedFragment(
-                        viewModel.orderId,
+                        visaPaymentViewModel.orderId,
                         it1.toFloat(), balance.toFloat()
                     )
                 }
@@ -85,7 +77,7 @@ class VisaPaymentFragment : Fragment() {
             }
         })
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { it ->
+        visaPaymentViewModel.errorMessage.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let { message ->
                 context?.let {
                     val builder = androidx.appcompat.app.AlertDialog.Builder(it)

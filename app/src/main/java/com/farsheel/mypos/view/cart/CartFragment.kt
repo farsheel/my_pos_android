@@ -10,10 +10,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import androidx.core.content.ContextCompat
-import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.*
@@ -27,6 +25,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.cart_fragment.*
 import kotlinx.android.synthetic.main.layout_cart_item.view.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class CartFragment : Fragment() {
 
@@ -56,7 +55,7 @@ class CartFragment : Fragment() {
     private lateinit var binding: CartFragmentBinding
     private lateinit var itemListAdapter: ItemListAdapter
     private lateinit var swipeHandler: SwipeToDeleteCallback
-    private lateinit var viewModel: CartViewModel
+    private val cartViewModel: CartViewModel by viewModel()
     private lateinit var cartEditBehavior: BottomSheetBehavior<LinearLayout>
 
     override fun onCreateView(
@@ -76,15 +75,21 @@ class CartFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CartViewModel::class.java)
 
-        binding.viewmodel = viewModel
+        binding.viewmodel = cartViewModel
         cartRcv.layoutManager = LinearLayoutManager(context)
         cartRcv.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
         itemListAdapter = ItemListAdapter()
         cartRcv.adapter = itemListAdapter
-        viewModel.cartList.observe(viewLifecycleOwner, Observer {
+        cartViewModel.getCartList().observe(viewLifecycleOwner, Observer {
             itemListAdapter.submitList(it)
+            Handler().postDelayed({
+                if (itemListAdapter.itemCount == 0){
+                    totalsLayout.visibility = View.GONE
+                }else{
+                    totalsLayout.visibility = View.VISIBLE
+                }
+            },100)
         })
 
         val itemTouchHelper = ItemTouchHelper(swipeHandler)
@@ -95,49 +100,59 @@ class CartFragment : Fragment() {
         cartEditBehavior.isHideable = true
 
 
-        viewModel.itemEditApply.observe(viewLifecycleOwner, Observer {
+        cartViewModel.itemEditApply.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled().let {
                 context?.let { it1 -> hideKeyboard(it1) }
-                viewModel.selectedItem.value?.productPrice =
-                    viewModel.enteredPrice.value?.toDouble()!!
+                cartViewModel.selectedItem.value?.productPrice =
+                    cartViewModel.enteredPrice.value?.toDouble()!!
 
-                viewModel.selectedItem.value?.quantity =
-                    viewModel.enteredQuantity.value?.toDouble()!!
+                cartViewModel.selectedItem.value?.quantity =
+                    cartViewModel.enteredQuantity.value?.toDouble()!!
 
-                viewModel.selectedItem.value?.let { item -> viewModel.addToCart(item) }
+                cartViewModel.selectedItem.value?.let { item -> cartViewModel.addToCart(item) }
                 cartEditBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         })
 
-        viewModel.selectedItem.observe(viewLifecycleOwner, Observer {
+        cartViewModel.selectedItem.observe(viewLifecycleOwner, Observer {
+            cartViewModel.enteredPrice.value = it.productPrice.toString()
+            cartViewModel.enteredQuantity.value = it.quantity.toString()
+            editNameTv.text = it.name
+            quantityEt.setText(it.quantity.toString())
+            priceEt.setText(it.productPrice.toString())
 
-            viewModel.enteredPrice.value = it.productPrice.toString()
-            viewModel.enteredQuantity.value = it.quantity.toString()
-            viewModel.notifyPropertyChanged(BR.enteredQuantity)
-            viewModel.notifyPropertyChanged(BR.enteredPrice)
-            viewModel.notifyPropertyChanged(BR.selectedItem)
         })
 
-        viewModel.closeBottomSheet.observe(viewLifecycleOwner, Observer {
+        cartViewModel.closeBottomSheet.observe(viewLifecycleOwner, Observer {
             cartEditBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             context?.let { it1 -> hideKeyboard(it1) }
         })
 
-        viewModel.cartSubTotal.observe(viewLifecycleOwner, Observer {
-            viewModel.notifyPropertyChanged(BR.cartSubTotal)
+        cartViewModel.getSubTotal().observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                subTotalTv.text = getString(R.string.subtotal, Util.currencyLocale(it))
+            }
+        })
+        cartViewModel.cartVATTotal.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                payBtn.text = getString(
+                    R.string.pay,
+                    Util.currencyLocale(it)
+                )
+
+                totalTv.text = getString(
+                    R.string.total,
+                    Util.currencyLocale(it)
+                )
+            }
         })
 
-        viewModel.cartVAT.observe(viewLifecycleOwner, Observer {
-            viewModel.notifyPropertyChanged(BR.cartVAT)
+        cartViewModel.cartVAT.observe(viewLifecycleOwner, Observer {
+            if (it != null) {
+                vatTv.text = getString(R.string.vat, Util.currencyLocale(it))
+            }
         })
-
-
-        viewModel.discountApplied.observe(viewLifecycleOwner, Observer {
-            viewModel.notifyPropertyChanged(BR.discountApplied)
-        })
-
-
-        viewModel.onClickPay.observe(viewLifecycleOwner, Observer {
+        cartViewModel.onClickPay.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()
                     ?.navigate(R.id.action_cartFragment_to_paymentTenderFragment)
@@ -152,7 +167,7 @@ class CartFragment : Fragment() {
             override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                 val cartEntity = itemListAdapter.currentList?.get(viewHolder.adapterPosition)
                 if (cartEntity != null) {
-                    viewModel.removeCart(cartEntity)
+                    cartViewModel.removeCart(cartEntity)
                     Snackbar.make(
                         viewHolder.itemView,
                         cartEntity.name + " is removed",
@@ -163,7 +178,7 @@ class CartFragment : Fragment() {
                         .setAction(
                             getString(R.string.undo)
                         ) {
-                            viewModel.addToCart(cartEntity)
+                            cartViewModel.addToCart(cartEntity)
                         }.show()
                 }
             }
@@ -179,7 +194,7 @@ class CartFragment : Fragment() {
                 bindTo(cartEntity)
                 cartEntity?.let {
                     itemView.setOnClickListener {
-                        viewModel.selectedItem.postValue(cartEntity)
+                        cartViewModel.selectedItem.postValue(cartEntity)
                         if (cartEditBehavior.state == BottomSheetBehavior.STATE_EXPANDED) {
                             cartEditBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
                             Handler().postDelayed({
@@ -217,9 +232,8 @@ class CartFragment : Fragment() {
                         Util.currencyLocale(product.quantity * product.productPrice)
                     itemView.priceTv.text = Util.currencyLocale(product.productPrice)
                 }
-
             }
         }
     }
-
 }
+

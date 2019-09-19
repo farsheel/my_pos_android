@@ -1,29 +1,26 @@
 package com.farsheel.mypos.view.login
 
-import android.app.Application
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.PreferenceManager
-import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.data.remote.request.LoginRequest
 import com.farsheel.mypos.data.remote.response.LoginResponse
+import com.farsheel.mypos.data.repository.AuthRepository
+import com.farsheel.mypos.data.repository.WorkRepository
 import com.farsheel.mypos.util.Event
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
 
 
-class LoginViewModel(application: Application) : BaseViewModel(application) {
+class LoginViewModel(val authRepository: AuthRepository,val workRepository: WorkRepository) : BaseViewModel() {
 
     private var disposable: CompositeDisposable = CompositeDisposable()
+
     val email: MutableLiveData<String> = MutableLiveData()
     val password: MutableLiveData<String> = MutableLiveData()
 
-
-    private val _busy = MutableLiveData<Boolean>()
-    val busy: LiveData<Boolean> get() = _busy
+    val busy: ObservableField<Boolean> = ObservableField()
 
     private val _errorMessage = MutableLiveData<Event<String>>()
     val errorMessage: LiveData<Event<String>> get() = _errorMessage
@@ -41,14 +38,12 @@ class LoginViewModel(application: Application) : BaseViewModel(application) {
 
         val loginRequest = LoginRequest(email.value.toString(), password.value.toString())
 
-        val loginDisposable = ApiClient.getApiService(getApplication()).login(loginRequest)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        val loginDisposable = authRepository.login(loginRequest)
             .subscribeWith(object : DisposableSingleObserver<LoginResponse>() {
                 override fun onSuccess(t: LoginResponse) {
                     if (t.status) {
-                        PreferenceManager.setUserSession(getApplication(), t)
-                        scheduleSyncWork()
+                        authRepository.setUserSession(t)
+                        workRepository.scheduleSyncWork()
                         _loginSuccess.value = Event(true)
                     } else {
                         _errorMessage.postValue(Event(t.message))
@@ -66,8 +61,7 @@ class LoginViewModel(application: Application) : BaseViewModel(application) {
     }
 
     private fun setBusy(isBusy: Boolean) {
-        _busy.value = isBusy
-        notifyChange()
+        busy.set(isBusy)
     }
 
     override fun onCleared() {

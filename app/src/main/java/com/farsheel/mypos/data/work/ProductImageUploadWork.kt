@@ -67,7 +67,7 @@ class ProductImageUploadWork(val context: Context, workerParams: WorkerParameter
             }
         })
 
-        onEvent()
+        showNotification()
 
         val filePart =
             MultipartBody.Part.createFormData("product_image", file.name, progressRequestBody)
@@ -148,7 +148,7 @@ class ProductImageUploadWork(val context: Context, workerParams: WorkerParameter
 
     }
 
-    fun onEvent() {
+    private fun showNotification() {
 
         val mContext = applicationContext
         val resultIntent = Intent()

@@ -83,6 +83,9 @@ Enter PIN to get your Pending Approvals
 Select the DEBIT GHS 66.75 initiated by epesewa
 Select 1 Yes to approve the transaction
 Wait for DEBIT confirmation prompt or SMS</string>
+    <string name="syncing">Syncing..</string>
+    <string name="fetching_products">Fetching products</string>
+    <string name="fetching_categories">Fetching categories</string>
 
 
 </resources>

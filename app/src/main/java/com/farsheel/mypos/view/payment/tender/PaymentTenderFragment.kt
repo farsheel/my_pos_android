@@ -5,24 +5,20 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.farsheel.mypos.R
 import com.farsheel.mypos.databinding.PaymentTenderFragmentBinding
+import com.farsheel.mypos.util.Util
+import kotlinx.android.synthetic.main.payment_tender_fragment.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class PaymentTenderFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = PaymentTenderFragment()
-    }
-
     private lateinit var binding: PaymentTenderFragmentBinding
 
-
-    private lateinit var viewModel: PaymentTenderViewModel
+    private val paymentTenderViewModel: PaymentTenderViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -40,68 +36,59 @@ class PaymentTenderFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(PaymentTenderViewModel::class.java)
-        binding.viewmodel = viewModel
+        binding.viewmodel = paymentTenderViewModel
 
-        viewModel.amountToPay.observe(this, Observer {
-            viewModel.notifyPropertyChanged(BR.amountToPay)
+        paymentTenderViewModel.amountToPay.observe(this, Observer {
+            amountTv.text = Util.currencyLocale(it)
         })
 
-        viewModel.onSelectCash.observe(viewLifecycleOwner, Observer {
+        paymentTenderViewModel.onSelectCash.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
-                view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_cashPaymentFragment)
+                view?.findNavController()
+                    ?.navigate(R.id.action_paymentTenderFragment_to_cashPaymentFragment)
             }
         })
 
 
-        viewModel.onSelectAirtel.observe(viewLifecycleOwner, Observer {
+        paymentTenderViewModel.onSelectAirtel.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_airtelPaymentFragment)
             }
         })
 
 
-        viewModel.onSelectMtn.observe(viewLifecycleOwner, Observer {
+        paymentTenderViewModel.onSelectMtn.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_mtnPaymentFragment)
             }
         })
 
 
-        viewModel.onSelectVodafone.observe(viewLifecycleOwner, Observer {
+        paymentTenderViewModel.onSelectVodafone.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_vodafonePaymentFragment)
             }
         })
 
 
-        viewModel.onSelectGmoney.observe(viewLifecycleOwner, Observer {
+        paymentTenderViewModel.onSelectGmoney.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_gmoneyPaymentFragment)
             }
         })
 
 
-        viewModel.onSelectMasterpass.observe(viewLifecycleOwner, Observer {
+        paymentTenderViewModel.onSelectMasterpass.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_masterpassPaymentFragment)
             }
         })
 
-
-        viewModel.onSelectVisa.observe(viewLifecycleOwner, Observer {
+        paymentTenderViewModel.onSelectVisa.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_visaPaymentFragment)
             }
         })
-
-
-
-
-
-
-
-
     }
 
 }

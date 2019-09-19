@@ -36,8 +36,8 @@ android {
     buildTypes {
         def LIVE_URL = "\"https://epe.azurewebsites.net\""
  //       def LIVE_URL = "\"https://mypos.farsheel.com\""
-        def LOCAL_URL = "\"https://epe.azurewebsites.net\""
- //       def LOCAL_URL = "\"http://192.168.43.248:8000\""
+//        def LOCAL_URL = "\"https://epe.azurewebsites.net\""
+        def LOCAL_URL = "\"http://192.168.43.248:8000\""
         debug {
             signingConfig signingConfigs.release
             buildConfigField "String", "API_URL", LOCAL_URL
@@ -110,7 +110,15 @@ dependencies {
     implementation "androidx.work:work-runtime-ktx:$work_version"
     implementation "androidx.work:work-rxjava2:$work_version"
 
+    //image picker
     implementation 'com.github.esafirm.android-image-picker:imagepicker:2.1.0'
+
+
+
+    //DI
+    def koin_version = '2.0.1'
+    implementation "org.koin:koin-android:$koin_version"
+    implementation "org.koin:koin-android-viewmodel:$koin_version"
 
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test:runner:1.2.0'

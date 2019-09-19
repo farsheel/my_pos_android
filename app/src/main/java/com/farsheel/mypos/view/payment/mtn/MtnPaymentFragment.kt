@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.farsheel.mypos.R
 import com.farsheel.mypos.databinding.PayMtnPaymentFragmentBinding
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class MtnPaymentFragment : Fragment() {
 
@@ -21,7 +22,7 @@ class MtnPaymentFragment : Fragment() {
     }
 
     private lateinit var binding: PayMtnPaymentFragmentBinding
-    private lateinit var viewModel: MtnPaymentViewModel
+    private val mtnPaymentViewModel: MtnPaymentViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -39,27 +40,20 @@ class MtnPaymentFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(MtnPaymentViewModel::class.java)
-        binding.viewmodel = viewModel
+        binding.viewmodel = mtnPaymentViewModel
 
+        mtnPaymentViewModel.amountToPay.observe(viewLifecycleOwner, Observer {
+            mtnPaymentViewModel.amountEntered.set(mtnPaymentViewModel.amountToPay.value.toString())
 
-        viewModel.amountToPay.observe(viewLifecycleOwner, Observer {
-            viewModel.amountEntered.postValue(viewModel.amountToPay.value.toString())
-            viewModel.notifyPropertyChanged(BR.amountToPay)
-            viewModel.notifyPropertyChanged(BR.amountEntered)
         })
 
-        viewModel.amountEntered.observe(viewLifecycleOwner, Observer {
-            viewModel.notifyPropertyChanged(BR.amountEntered)
-        })
-
-        viewModel.lesserAmountEntered.observe(viewLifecycleOwner, Observer { it ->
+        mtnPaymentViewModel.lesserAmountEntered.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let {
                 val builder = AlertDialog.Builder(context)
                 builder.setMessage(getString(R.string.entered_a_lesser_amount_message))
                 builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                     dialog.dismiss()
-                    viewModel.amountEntered.value = viewModel.amountToPay.value.toString()
+                    mtnPaymentViewModel.amountEntered.set( mtnPaymentViewModel.amountToPay.value.toString())
                 }
                 builder.setNeutralButton(getString(R.string.cancel), null)
                 val dialog = builder.show()
@@ -70,11 +64,11 @@ class MtnPaymentFragment : Fragment() {
             }
         })
 
-        viewModel.navigateToCompleted.observe(viewLifecycleOwner, Observer {
+        mtnPaymentViewModel.navigateToCompleted.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let { balance ->
-                val action = viewModel.amountToPay.value?.let { it1 ->
+                val action = mtnPaymentViewModel.amountToPay.value?.let { it1 ->
                     MtnPaymentFragmentDirections.actionMtnPaymentFragmentToPaymentCompletedFragment(
-                        viewModel.orderId,
+                        mtnPaymentViewModel.orderId,
                         it1.toFloat(), balance.toFloat()
                     )
                 }
@@ -85,7 +79,7 @@ class MtnPaymentFragment : Fragment() {
             }
         })
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { it ->
+        mtnPaymentViewModel.errorMessage.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let { message ->
                 context?.let {
                     val builder = androidx.appcompat.app.AlertDialog.Builder(it)

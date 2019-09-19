@@ -6,14 +6,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.farsheel.mypos.R
 import com.farsheel.mypos.databinding.SplashFragmentBinding
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class SplashFragment : Fragment() {
 
-    private lateinit var viewModel: SplashViewModel
+    private val splashViewModel: SplashViewModel by viewModel()
     private lateinit var binding: SplashFragmentBinding
 
     override fun onCreateView(
@@ -32,10 +32,9 @@ class SplashFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(SplashViewModel::class.java)
-        binding.viewmodel = viewModel
+        binding.viewmodel = splashViewModel
 
-        viewModel.openNext.observe(viewLifecycleOwner, Observer {
+        splashViewModel.openNext.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let { action ->
                 view?.findNavController()
                     ?.navigate(action)

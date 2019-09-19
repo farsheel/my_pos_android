@@ -1,43 +1,44 @@
 package com.farsheel.mypos.view.home
 
-import android.app.Application
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.model.CartEntity
 import com.farsheel.mypos.data.model.CategoryEntity
 import com.farsheel.mypos.data.model.ProductEntity
+import com.farsheel.mypos.data.repository.CartRepository
+import com.farsheel.mypos.data.repository.CategoryRepository
+import com.farsheel.mypos.data.repository.ProductRepository
 import com.farsheel.mypos.util.Event
-import io.reactivex.schedulers.Schedulers
 
-class HomeViewModel(application: Application) : BaseViewModel(application) {
+class HomeViewModel(
+    private val productRepository: ProductRepository,
+    private val cartRepository: CartRepository,
+    private val categoryRepository: CategoryRepository
 
-    val selectedCat: MutableLiveData<Long> = MutableLiveData()
-    val categoryList: LiveData<List<CategoryEntity>> =
-        AppDatabase.invoke(getApplication()).categoryDao().getAllList()
+) : BaseViewModel() {
 
-    val productList: LiveData<PagedList<ProductEntity>> = Transformations.switchMap(selectedCat) {
-        if (it == null) {
-            return@switchMap LivePagedListBuilder(
-                AppDatabase.invoke(getApplication()).productDao().getAll(),
-                20
-            ).build()
 
-        } else {
-            return@switchMap LivePagedListBuilder(
-                AppDatabase.invoke(getApplication()).productDao().getAllByCatId(selectedCat.value),
-                20
-            ).build()
-        }
+    fun getCategoryList(): LiveData<List<CategoryEntity>> {
+        return categoryRepository.getCategories()
     }
 
-    val cartList = AppDatabase.invoke(application).cartDao().getAll()
+    fun selectCategory(catId: Long?) {
+        productRepository.selectedCat.postValue(catId)
+    }
 
-    val cartTotal = AppDatabase.invoke(application).cartDao().getCartTotal()
+    fun getProductList(): LiveData<PagedList<ProductEntity>> {
+        return productRepository.productList
+    }
+
+    fun getCartList(): LiveData<List<CartEntity>> {
+        return cartRepository.cartListLive
+    }
+
+    fun getCartTotal(): LiveData<Double> {
+        return cartRepository.cartSubTotal
+    }
 
 
     private val _navigateToCart = MutableLiveData<Event<Boolean>>()
@@ -51,8 +52,7 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
             productId = productEntity.itemId!!,
             productPrice = productEntity.price
         )
-        AppDatabase.invoke(getApplication()).cartDao().insert(cartEntity)
-            .subscribeOn(Schedulers.io()).subscribe()
+        cartRepository.addToCart(cartEntity)
     }
 
     fun onClickCart() {
@@ -61,7 +61,6 @@ class HomeViewModel(application: Application) : BaseViewModel(application) {
     }
 
     fun clearCart() {
-        AppDatabase.invoke(getApplication()).cartDao().deleteAll().subscribeOn(Schedulers.io())
-            .subscribe()
+        cartRepository.clearCart()
     }
 }

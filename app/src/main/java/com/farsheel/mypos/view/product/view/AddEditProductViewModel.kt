@@ -1,23 +1,17 @@
 package com.farsheel.mypos.view.product.view
 
-import android.app.Application
-import androidx.core.content.ContextCompat
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.Transformations
-import androidx.paging.LivePagedListBuilder
 import androidx.paging.PagedList
-import androidx.work.*
 import com.farsheel.mypos.R
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.model.CategoryEntity
 import com.farsheel.mypos.data.model.FeedbackMessage
 import com.farsheel.mypos.data.model.ProductEntity
-import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.data.remote.response.ProductCreateResponse
-import com.farsheel.mypos.data.work.ProductImageUploadWork
-import com.farsheel.mypos.data.work.SyncWorkManager
+import com.farsheel.mypos.data.repository.CategoryRepository
+import com.farsheel.mypos.data.repository.ProductRepository
 import com.farsheel.mypos.util.Event
 import com.farsheel.mypos.view.category.view.AddEditCategoryViewModel
 import io.reactivex.SingleObserver
@@ -25,10 +19,12 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
 import java.io.File
 
-class AddEditProductViewModel(application: Application) : BaseViewModel(application) {
+class AddEditProductViewModel(
+    private val productRepository: ProductRepository,
+    private val categoryRepository: CategoryRepository
+) : BaseViewModel() {
 
     companion object {
         private val TAG = AddEditCategoryViewModel::class.java.simpleName
@@ -36,21 +32,8 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
 
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
-
     var categoryFilter = MutableLiveData<String>()
 
-    val categoryList: LiveData<PagedList<CategoryEntity>> =
-        Transformations.switchMap(categoryFilter) {
-            if (it.isNullOrEmpty()) {
-                return@switchMap LivePagedListBuilder(
-                    AppDatabase.invoke(getApplication()).categoryDao().getAll(), 20
-                ).build()
-            } else {
-                return@switchMap LivePagedListBuilder(
-                    AppDatabase.invoke(getApplication()).categoryDao().getAllByQuery("%$it%"), 20
-                ).build()
-            }
-        }
 
     private val _showCatSpinner = MutableLiveData<Event<Boolean>>()
     val showCatSpinner: LiveData<Event<Boolean>> get() = _showCatSpinner
@@ -62,24 +45,17 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
     val itemName = MutableLiveData<String>()
     val itemId = MutableLiveData<Long>()
     val price = MutableLiveData<String>()
-    val category = MutableLiveData<String>()
-    val categoryString = MutableLiveData<String>()
-    val image  = MutableLiveData<File?>()
+    val category = ObservableField<String>()
+    val categoryString = ObservableField<String>()
+    val image = MutableLiveData<File?>()
 
     val description = MutableLiveData<String>()
 
 
-    val mUpcError = MutableLiveData<String>()
-    val upcError: LiveData<String> = mUpcError
-
-    val mNameError = MutableLiveData<String>()
-    val nameError: LiveData<String> = mNameError
-
-    val mPriceError = MutableLiveData<String>()
-    val priceError: LiveData<String> = mPriceError
-
-    val mCategoryError = MutableLiveData<String>()
-    val categoryError: LiveData<String> = mCategoryError
+    val upcError: ObservableField<String> = ObservableField()
+    val nameError: ObservableField<String> = ObservableField()
+    val priceError: ObservableField<String> = ObservableField()
+    val categoryError: ObservableField<String> = ObservableField()
 
     private val _snackbarMessage = MutableLiveData<Event<FeedbackMessage>>()
     val snackbarMessage: LiveData<Event<FeedbackMessage>> get() = _snackbarMessage
@@ -87,28 +63,31 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
     private val _saveError = MutableLiveData<Event<String>>()
     val saveError: LiveData<Event<String>> = _saveError
 
-    private val _busy = MutableLiveData<Boolean>()
-    val busy: LiveData<Boolean> get() = _busy
+    val busy = ObservableField<Boolean>()
 
+
+    fun categoryList(): LiveData<PagedList<CategoryEntity>> {
+        return categoryRepository.getPagedCategories()
+    }
+
+    fun searchCategory(search: String?) {
+        categoryRepository.filterTextAll.postValue(search)
+    }
 
     fun addEditProduct() {
-
-        if (validate(true)) {
+        if (validate()) {
             val productEntity = ProductEntity(
                 itemId = itemId.value,
                 upc = itemUpc.value.orEmpty(),
-                category = category.value!!,
+                category = category.get()!!,
                 description = description.value.orEmpty(),
                 name = itemName.value.orEmpty(),
                 price = if (price.value.isNullOrEmpty()) 0.0 else price.value!!.toDouble(),
                 image = ""
             )
-
             setBusy(true)
             val createDisposable =
-                ApiClient.getApiService(getApplication()).createOrUpdateProduct(productEntity)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                productRepository.addEditProductRemote(productEntity)
                     .subscribeWith(object : DisposableSingleObserver<ProductCreateResponse>() {
                         override fun onSuccess(t: ProductCreateResponse) {
                             if (t.status) {
@@ -133,52 +112,34 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
         compositeDisposable.dispose()
     }
 
-    private fun uploadImage(itemId: Long?) {
-        val constraints = Constraints.Builder()
-            .setRequiredNetworkType(NetworkType.CONNECTED)
-            .build()
-        val work = OneTimeWorkRequestBuilder<ProductImageUploadWork>()
-        work.addTag(SyncWorkManager::class.java.simpleName)
-        work.setConstraints(constraints)
-        val data = Data.Builder()
-//Add parameter in Data class. just like bundle. You can also add Boolean and Number in parameter.
-        data.putString("file_path", image.value.toString())
-        data.putString("product_id", itemId.toString())
-//Set Input Data
-        work.setInputData(data.build())
-        WorkManager.getInstance(getApplication()).enqueue(work.build())
-    }
 
-    fun validate(notify: Boolean): Boolean {
+    fun validate(): Boolean {
         var valid = true
 
         if (itemUpc.value.isNullOrEmpty()) {
-            mUpcError.postValue(getApplication<Application>().getString(R.string.upc_can_not_empty))
+            upcError.set(productRepository.getResources().getString(R.string.upc_can_not_empty))
             valid = false
 
         } else {
-            mUpcError.postValue(null)
+            upcError.set(null)
         }
         if (itemName.value.isNullOrEmpty()) {
-            mNameError.postValue(getApplication<Application>().getString(R.string.name_can_not_be_empty))
+            nameError.set(productRepository.getResources().getString(R.string.name_can_not_be_empty))
             valid = false
         } else {
-            mNameError.postValue(null)
+            nameError.set(null)
         }
         if (price.value.isNullOrEmpty()) {
-            mPriceError.postValue(getApplication<Application>().getString(R.string.price_can_not_be_empty))
+            priceError.set(productRepository.getResources().getString(R.string.price_can_not_be_empty))
             valid = false
         } else {
-            mPriceError.postValue(null)
+            priceError.set(null)
         }
-        if (category.value.isNullOrEmpty()) {
-            mCategoryError.postValue(getApplication<Application>().getString(R.string.please_select_category))
+        if (category.get().isNullOrEmpty()) {
+            categoryError.set(productRepository.getResources().getString(R.string.please_select_category))
             valid = false
         } else {
-            mCategoryError.postValue(null)
-        }
-        if (notify) {
-            notifyChange()
+            categoryError.set(null)
         }
 
         return valid
@@ -186,12 +147,10 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
 
     private fun saveProduct(productEntity: ProductEntity) {
         if (image.value != null) {
-            uploadImage(productEntity.itemId)
+            productRepository.uploadProductImage(productEntity.itemId, image.value.toString())
         }
 
-        AppDatabase.invoke(getApplication()).productDao().insert(productEntity)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        productRepository.saveProductLocal(productEntity)
             .subscribe(object : SingleObserver<Long> {
                 override fun onSubscribe(d: Disposable) {
                 }
@@ -200,8 +159,8 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
                     setBusy(false)
 
                     val feedbackMessage = FeedbackMessage(
-                        color = ContextCompat.getColor(getApplication(), R.color.redUi),
-                        message = getApplication<Application>().getString(R.string.something_went_wrong)
+                        color = productRepository.getColor(R.color.redUi),
+                        message = productRepository.getResources().getString(R.string.something_went_wrong)
                     )
                     _snackbarMessage.postValue(Event(feedbackMessage))
                 }
@@ -210,8 +169,8 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
                     setBusy(false)
                     itemId.postValue(t)
                     val feedbackMessage = FeedbackMessage(
-                        color = ContextCompat.getColor(getApplication(), R.color.greenUi),
-                        message = getApplication<Application>().getString(R.string.product_saved)
+                        color = productRepository.getColor(R.color.greenUi),
+                        message = productRepository.getResources().getString(R.string.product_saved)
                     )
                     _snackbarMessage.postValue(Event(feedbackMessage))
                 }
@@ -227,8 +186,6 @@ class AddEditProductViewModel(application: Application) : BaseViewModel(applicat
     }
 
     private fun setBusy(isBusy: Boolean) {
-        _busy.value = isBusy
-        notifyChange()
+        busy.set(isBusy)
     }
-
 }

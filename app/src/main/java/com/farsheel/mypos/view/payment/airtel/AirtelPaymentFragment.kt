@@ -44,14 +44,10 @@ class AirtelPaymentFragment : Fragment() {
 
 
         viewModel.amountToPay.observe(viewLifecycleOwner, Observer {
-            viewModel.amountEntered.postValue(viewModel.amountToPay.value.toString())
-            viewModel.notifyPropertyChanged(BR.amountToPay)
-            viewModel.notifyPropertyChanged(BR.amountEntered)
+            viewModel.amountEntered.set(viewModel.amountToPay.value.toString())
+
         })
 
-        viewModel.amountEntered.observe(viewLifecycleOwner, Observer {
-            viewModel.notifyPropertyChanged(BR.amountEntered)
-        })
 
         viewModel.lesserAmountEntered.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let {
@@ -59,7 +55,7 @@ class AirtelPaymentFragment : Fragment() {
                 builder.setMessage(getString(R.string.entered_a_lesser_amount_message))
                 builder.setPositiveButton(getString(R.string.yes)) { dialog, _ ->
                     dialog.dismiss()
-                    viewModel.amountEntered.value = viewModel.amountToPay.value.toString()
+                    viewModel.amountEntered.set(viewModel.amountToPay.value.toString())
                 }
                 builder.setNeutralButton(getString(R.string.cancel), null)
                 val dialog = builder.show()

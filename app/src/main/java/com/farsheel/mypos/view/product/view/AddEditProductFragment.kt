@@ -10,7 +10,6 @@ import android.widget.LinearLayout
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
 import com.bumptech.glide.Glide
@@ -24,13 +23,14 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.add_edit_product_fragment.*
 import kotlinx.android.synthetic.main.add_edit_product_fragment.view.*
+import org.koin.android.viewmodel.ext.android.viewModel
 import java.io.File
 
 
 class AddEditProductFragment : Fragment() {
 
     private lateinit var binding: AddEditProductFragmentBinding
-    private lateinit var viewModel: AddEditProductViewModel
+    private val addEditProductViewModel: AddEditProductViewModel by viewModel()
     private lateinit var categoryAdapter: CategorySelectorAdapter
     private lateinit var categoryBehavior: BottomSheetBehavior<LinearLayout>
 
@@ -51,14 +51,12 @@ class AddEditProductFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(AddEditProductViewModel::class.java)
-        binding.viewmodel = viewModel
+        binding.viewmodel = addEditProductViewModel
 
         categoryAdapter = CategorySelectorAdapter(object : CategoryClickListener {
             override fun onClickCategory(category: CategoryEntity) {
-                viewModel.category.postValue(category.catId.toString())
-                viewModel.categoryString.postValue(category.name)
-                viewModel.validate(true)
+                addEditProductViewModel.category.set(category.catId.toString())
+                addEditProductViewModel.categoryString.set(category.name)
                 categoryBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
             }
         })
@@ -66,31 +64,34 @@ class AddEditProductFragment : Fragment() {
 
         catRcv.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
 
-        viewModel.categoryList.observe(this, Observer { pagedNoteList ->
+        addEditProductViewModel.categoryList().observe(this, Observer { pagedNoteList ->
             pagedNoteList?.let { render(pagedNoteList) }
         })
-        viewModel.categoryFilter.postValue(null)
+        addEditProductViewModel.searchCategory(null)
 
         categoryBehavior.isHideable = true
         categoryBehavior.peekHeight = 0
         categoryBehavior.state = BottomSheetBehavior.STATE_COLLAPSED
-        viewModel.showCatSpinner.observe(this, Observer {
+        addEditProductViewModel.showCatSpinner.observe(this, Observer {
             it.getContentIfNotHandled()?.let {
                 categoryBehavior.state = BottomSheetBehavior.STATE_EXPANDED
             }
         })
 
-        viewModel.selectImage.observe(this, Observer {
+        addEditProductViewModel.selectImage.observe(this, Observer {
             it.getContentIfNotHandled()?.let {
                 openImagePicker()
             }
         })
 
-        viewModel.image.observe(this, Observer {
+        addEditProductViewModel.image.observe(this, Observer {
             Glide.with(this).load(it).into(productImageIv)
         })
+        addEditProductViewModel.categoryFilter.observe(this, Observer {
+            addEditProductViewModel.searchCategory(it)
+        })
 
-        viewModel.snackbarMessage.observe(this, Observer { it ->
+        addEditProductViewModel.snackbarMessage.observe(this, Observer { it ->
             it.getContentIfNotHandled().let {
                 if (it != null) {
                     Snackbar.make(saveProductFab, it.message, Snackbar.LENGTH_SHORT)
@@ -100,7 +101,7 @@ class AddEditProductFragment : Fragment() {
             }
         })
 
-        viewModel.saveError.observe(viewLifecycleOwner, Observer { it ->
+        addEditProductViewModel.saveError.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let { message ->
                 context?.let {
                     val builder = AlertDialog.Builder(it)
@@ -109,8 +110,6 @@ class AddEditProductFragment : Fragment() {
                 }
             }
         })
-
-        observeChanges()
     }
 
     private fun openImagePicker() {
@@ -132,34 +131,11 @@ class AddEditProductFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             val image = ImagePicker.getFirstImageOrNull(data)
-            viewModel.image.postValue(File(image.path))
+            addEditProductViewModel.image.postValue(File(image.path))
         }
         super.onActivityResult(requestCode, resultCode, data)
     }
 
-    private fun observeChanges() {
-        viewModel.itemUpc.observe(this, Observer {
-            if (!it.isNullOrEmpty()) {
-                viewModel.mUpcError.postValue(null)
-            }
-        })
-        viewModel.itemName.observe(this, Observer {
-            if (!it.isNullOrEmpty()) {
-                viewModel.mNameError.postValue(null)
-            }
-        })
-        viewModel.price.observe(this, Observer {
-            if (!it.isNullOrEmpty()) {
-                viewModel.mPriceError.postValue(null)
-            }
-        })
-        viewModel.category.observe(this, Observer {
-            if (!it.isNullOrEmpty()) {
-                viewModel.mCategoryError.postValue(null)
-            }
-        })
-
-    }
 
     private fun render(pagedCatList: PagedList<CategoryEntity>) {
         categoryAdapter.submitList(pagedCatList)
