@@ -1,6 +1,7 @@
 package com.farsheel.mypos.data.repository
 
 import android.content.Context
+import android.graphics.Bitmap
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
@@ -12,11 +13,15 @@ import com.farsheel.mypos.data.model.OrderItemEntity
 import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.data.remote.request.OrderRequest
 import com.farsheel.mypos.data.remote.response.OrderCreateResponse
+import com.farsheel.mypos.data.remote.response.OrderResponse
+import com.farsheel.mypos.util.Util
 import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-class OrderRepository(private val context: Context, private val appDatabase: AppDatabase) {
+
+class OrderRepository(context: Context, private val appDatabase: AppDatabase) :
+    BaseRepository(context) {
 
     var filterTextAll = MutableLiveData<String>()
 
@@ -50,5 +55,23 @@ class OrderRepository(private val context: Context, private val appDatabase: App
         return appDatabase.orderDao()
             .insertOrderItemList(orderItemEntities).subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
+    }
+
+    fun generateQr(s: String): Bitmap? {
+        return Util.generateQR(s)
+    }
+
+    fun getOrderById(id: Long): LiveData<OrderDetailEntity> {
+        return appDatabase.orderDao().findById(id)
+    }
+
+    fun fetchOrderFromRemote(orderId: Long): Single<OrderResponse> {
+        return ApiClient.getApiService(context).getOrderById(orderId)
+            .subscribeOn(Schedulers.io())
+
+    }
+
+    fun updatePaymentStatus(paymentStatus: String, orderId: Long) {
+        appDatabase.orderDao().updatePaymentStatus(paymentStatus, orderId)
     }
 }

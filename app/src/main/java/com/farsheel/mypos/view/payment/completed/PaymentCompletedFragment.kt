@@ -3,10 +3,12 @@ package com.farsheel.mypos.view.payment.completed
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.farsheel.mypos.R
 import com.farsheel.mypos.databinding.PaymentCompletedFragmentBinding
@@ -42,7 +44,7 @@ class PaymentCompletedFragment : Fragment() {
 
         completedViewModel.startNewSale.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
-                activity?.onBackPressed()
+               findNavController().navigate(R.id.homeFragment)
             }
         })
 

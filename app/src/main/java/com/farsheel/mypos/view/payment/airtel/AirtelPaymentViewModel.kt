@@ -1,17 +1,12 @@
 package com.farsheel.mypos.view.payment.airtel
 
-import android.app.Application
-import androidx.databinding.Bindable
 import androidx.databinding.ObservableField
-import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.farsheel.mypos.R
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.model.OrderDetailEntity
 import com.farsheel.mypos.data.model.OrderItemEntity
-import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.data.remote.request.OrderRequest
 import com.farsheel.mypos.data.remote.response.OrderCreateResponse
 import com.farsheel.mypos.data.repository.CartRepository
@@ -124,7 +119,7 @@ class AirtelPaymentViewModel(val cartRepository: CartRepository,val orderReposit
         val orderDetailEntity = OrderDetailEntity(
             orderId = response.orderId,
             customerId = 0,
-            orderStatus = "completed",
+            paymentStatus = "completed",
             date = System.currentTimeMillis(),
             orderTotal = amountToPay.value.takeUnless { it == 00.00 }
                 ?: amountToPay.value!!)

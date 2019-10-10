@@ -86,6 +86,8 @@ Wait for DEBIT confirmation prompt or SMS</string>
     <string name="syncing">Syncing..</string>
     <string name="fetching_products">Fetching products</string>
     <string name="fetching_categories">Fetching categories</string>
+    <string name="waiting_for_payment">Waiting for payment</string>
+    <string name="pull_down_to_refresh">Pull down to refresh</string>
 
 
 </resources>

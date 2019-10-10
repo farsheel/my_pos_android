@@ -21,6 +21,7 @@ import com.farsheel.mypos.view.payment.visa.VisaPaymentViewModel
 import com.farsheel.mypos.view.payment.vodafone.VodafonePaymentViewModel
 import com.farsheel.mypos.view.product.list.ProductListViewModel
 import com.farsheel.mypos.view.product.view.AddEditProductViewModel
+import com.farsheel.mypos.view.qr.QrViewModel
 import com.farsheel.mypos.view.splash.SplashViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
@@ -64,6 +65,7 @@ val repositoryModule = module(override = true) {
 
 val viewModelModule = module {
     viewModel { CartViewModel(get()) }
+    viewModel { QrViewModel(get(), get()) }
     viewModel { CategoryListViewModel(get()) }
     viewModel { AddEditCategoryViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }

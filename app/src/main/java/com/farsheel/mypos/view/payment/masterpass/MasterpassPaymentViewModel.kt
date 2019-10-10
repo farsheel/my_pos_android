@@ -1,17 +1,12 @@
 package com.farsheel.mypos.view.payment.masterpass
 
-import android.app.Application
-import androidx.databinding.Bindable
 import androidx.databinding.ObservableField
-import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.farsheel.mypos.R
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.model.OrderDetailEntity
 import com.farsheel.mypos.data.model.OrderItemEntity
-import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.data.remote.request.OrderRequest
 import com.farsheel.mypos.data.remote.response.OrderCreateResponse
 import com.farsheel.mypos.data.repository.CartRepository
@@ -44,8 +39,8 @@ class MasterpassPaymentViewModel(
     private val _lesserAmountEntered = MutableLiveData<Event<Boolean>>()
     val lesserAmountEntered: LiveData<Event<Boolean>> get() = _lesserAmountEntered
 
-    private val _navigateToCompleted = MutableLiveData<Event<Double>>()
-    val navigateToCompleted: LiveData<Event<Double>> get() = _navigateToCompleted
+    private val _navigateToQr = MutableLiveData<Event<String>>()
+    val navigateToQr: LiveData<Event<String>> get() = _navigateToQr
 
     val busy: ObservableField<Boolean> = ObservableField()
 
@@ -95,7 +90,7 @@ class MasterpassPaymentViewModel(
     }
 
     private fun sendOrder(orderRequest: OrderRequest) {
-
+        orderRequest.payModeId = 2
         val createApi = orderRepository.createOrderRemote(orderRequest)
             .subscribeWith(object : DisposableSingleObserver<OrderCreateResponse>() {
                 override fun onSuccess(response: OrderCreateResponse) {
@@ -120,11 +115,11 @@ class MasterpassPaymentViewModel(
 
     private fun saveOrderLocally(response: OrderCreateResponse) {
         orderId = response.orderId
-        val balance: Double? = amountToPay.value?.let { amountEntered.get()?.toDouble()?.minus(it) }
         val orderDetailEntity = OrderDetailEntity(
             orderId = response.orderId,
             customerId = 0,
-            orderStatus = "completed",
+            paymentStatus = "pending",
+            payModeId = 2,
             date = System.currentTimeMillis(),
             orderTotal = amountToPay.value.takeUnless { it == 00.00 }
                 ?: amountToPay.value!!)
@@ -137,8 +132,7 @@ class MasterpassPaymentViewModel(
                         orderRepository.saveOrderItems(list)
                             .subscribe { _, _ ->
                                 cartRepository.clearCart()
-                                _navigateToCompleted.postValue(Event(balance.takeUnless { it == 00.00 }
-                                    ?: balance!!))
+                                _navigateToQr.postValue(Event(response.qrCode))
                             }
                     }
                 }

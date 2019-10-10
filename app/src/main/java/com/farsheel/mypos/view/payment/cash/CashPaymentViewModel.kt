@@ -116,7 +116,7 @@ class CashPaymentViewModel(
         val orderDetailEntity = OrderDetailEntity(
             orderId = response.orderId,
             customerId = 0,
-            orderStatus = "completed",
+            paymentStatus = "completed",
             date = System.currentTimeMillis(),
             orderTotal = amountToPay.value.takeUnless { it == 00.00 }
                 ?: amountToPay.value!!)

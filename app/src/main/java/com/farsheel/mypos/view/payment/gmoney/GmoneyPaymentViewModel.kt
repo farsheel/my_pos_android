@@ -1,6 +1,5 @@
 package com.farsheel.mypos.view.payment.gmoney
 
-import androidx.databinding.Bindable
 import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
@@ -120,7 +119,7 @@ class GmoneyPaymentViewModel(
         val orderDetailEntity = OrderDetailEntity(
             orderId = response.orderId,
             customerId = 0,
-            orderStatus = "completed",
+            paymentStatus = "completed",
             date = System.currentTimeMillis(),
             orderTotal = amountToPay.value.takeUnless { it == 00.00 }
                 ?: amountToPay.value!!)

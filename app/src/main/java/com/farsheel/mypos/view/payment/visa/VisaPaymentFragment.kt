@@ -8,7 +8,6 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.farsheel.mypos.R
 import com.farsheel.mypos.databinding.PayVisaPaymentFragmentBinding
@@ -62,22 +61,21 @@ class VisaPaymentFragment : Fragment() {
             }
         })
 
-        visaPaymentViewModel.navigateToCompleted.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let { balance ->
-                val action = visaPaymentViewModel.amountToPay.value?.let { it1 ->
-                    VisaPaymentFragmentDirections.actionVisaPaymentFragmentToPaymentCompletedFragment(
+        visaPaymentViewModel.navigateToQr.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let { qrCode ->
+                val action =
+                    VisaPaymentFragmentDirections.actionVisaPaymentFragmentToQrFragment(
                         visaPaymentViewModel.orderId,
-                        it1.toFloat(), balance.toFloat()
+                        qrCode
                     )
-                }
-                if (action != null) {
-                    view?.findNavController()
-                        ?.navigate(action)
-                }
+                view?.findNavController()
+                    ?.navigate(action)
             }
+
         })
 
-        visaPaymentViewModel.errorMessage.observe(viewLifecycleOwner, Observer { it ->
+        visaPaymentViewModel.errorMessage.observe(viewLifecycleOwner, Observer
+        { it ->
             it.getContentIfNotHandled()?.let { message ->
                 context?.let {
                     val builder = androidx.appcompat.app.AlertDialog.Builder(it)

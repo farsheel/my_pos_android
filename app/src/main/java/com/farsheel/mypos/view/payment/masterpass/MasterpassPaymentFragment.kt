@@ -64,18 +64,15 @@ class MasterpassPaymentFragment : Fragment() {
             }
         })
 
-        masterpassPaymentViewModel.navigateToCompleted.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let { balance ->
-                val action = masterpassPaymentViewModel.amountToPay.value?.let { it1 ->
-                    MasterpassPaymentFragmentDirections.actionMasterpassPaymentFragmentToPaymentCompletedFragment(
+        masterpassPaymentViewModel.navigateToQr.observe(viewLifecycleOwner, Observer {
+            it.getContentIfNotHandled()?.let { qrString ->
+                val action =
+                    MasterpassPaymentFragmentDirections.actionMasterpassPaymentFragmentToQrFragment(
                         masterpassPaymentViewModel.orderId,
-                        it1.toFloat(), balance.toFloat()
+                        qrString
                     )
-                }
-                if (action != null) {
-                    view?.findNavController()
-                        ?.navigate(action)
-                }
+                view?.findNavController()
+                    ?.navigate(action)
             }
         })
 

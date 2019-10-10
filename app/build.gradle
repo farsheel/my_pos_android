@@ -35,7 +35,7 @@ android {
 
     buildTypes {
         def LIVE_URL = "\"https://epe.azurewebsites.net\""
- //       def LIVE_URL = "\"https://mypos.farsheel.com\""
+        //       def LIVE_URL = "\"https://mypos.farsheel.com\""
 //        def LOCAL_URL = "\"https://epe.azurewebsites.net\""
         def LOCAL_URL = "\"http://192.168.43.248:8000\""
         debug {
@@ -113,6 +113,10 @@ dependencies {
     //image picker
     implementation 'com.github.esafirm.android-image-picker:imagepicker:2.1.0'
 
+
+    //QR/BAR Code
+    implementation 'com.google.zxing:core:3.4.0'
+    implementation 'com.journeyapps:zxing-android-embedded:3.2.0@aar'
 
 
     //DI

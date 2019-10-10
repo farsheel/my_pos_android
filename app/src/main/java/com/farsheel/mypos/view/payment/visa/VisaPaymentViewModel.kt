@@ -1,17 +1,12 @@
 package com.farsheel.mypos.view.payment.visa
 
-import android.app.Application
-import androidx.databinding.Bindable
 import androidx.databinding.ObservableField
-import androidx.databinding.library.baseAdapters.BR
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.farsheel.mypos.R
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.model.OrderDetailEntity
 import com.farsheel.mypos.data.model.OrderItemEntity
-import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.data.remote.request.OrderRequest
 import com.farsheel.mypos.data.remote.response.OrderCreateResponse
 import com.farsheel.mypos.data.repository.CartRepository
@@ -23,8 +18,9 @@ import io.reactivex.observers.DisposableSingleObserver
 import io.reactivex.schedulers.Schedulers
 
 
-class VisaPaymentViewModel(private val cartRepository: CartRepository,
-                           private val orderRepository: OrderRepository
+class VisaPaymentViewModel(
+    private val cartRepository: CartRepository,
+    private val orderRepository: OrderRepository
 ) : BaseViewModel() {
 
     var orderId: Long = 0
@@ -42,8 +38,8 @@ class VisaPaymentViewModel(private val cartRepository: CartRepository,
     private val _lesserAmountEntered = MutableLiveData<Event<Boolean>>()
     val lesserAmountEntered: LiveData<Event<Boolean>> get() = _lesserAmountEntered
 
-    private val _navigateToCompleted = MutableLiveData<Event<Double>>()
-    val navigateToCompleted: LiveData<Event<Double>> get() = _navigateToCompleted
+    private val _navigateToQr = MutableLiveData<Event<String>>()
+    val navigateToQr: LiveData<Event<String>> get() = _navigateToQr
 
     val busy: ObservableField<Boolean> = ObservableField()
 
@@ -93,7 +89,7 @@ class VisaPaymentViewModel(private val cartRepository: CartRepository,
     }
 
     private fun sendOrder(orderRequest: OrderRequest) {
-
+        orderRequest.payModeId = 3
         val createApi = orderRepository.createOrderRemote(orderRequest)
             .subscribeWith(object : DisposableSingleObserver<OrderCreateResponse>() {
                 override fun onSuccess(response: OrderCreateResponse) {
@@ -122,7 +118,8 @@ class VisaPaymentViewModel(private val cartRepository: CartRepository,
         val orderDetailEntity = OrderDetailEntity(
             orderId = response.orderId,
             customerId = 0,
-            orderStatus = "completed",
+            paymentStatus = "completed",
+            payModeId = 3,
             date = System.currentTimeMillis(),
             orderTotal = amountToPay.value.takeUnless { it == 00.00 }
                 ?: amountToPay.value!!)
@@ -135,8 +132,7 @@ class VisaPaymentViewModel(private val cartRepository: CartRepository,
                         orderRepository.saveOrderItems(list)
                             .subscribe { _, _ ->
                                 cartRepository.clearCart()
-                                _navigateToCompleted.postValue(Event(balance.takeUnless { it == 00.00 }
-                                    ?: balance!!))
+                                _navigateToQr.postValue(Event(response.qrCode))
                             }
                     }
                 }

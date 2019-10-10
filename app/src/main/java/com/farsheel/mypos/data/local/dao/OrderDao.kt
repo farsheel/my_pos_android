@@ -14,7 +14,7 @@ import io.reactivex.Single
 interface OrderDao {
 
     @Query("SELECT * FROM OrderDetail WHERE OrderId = :id")
-    fun findById(id: Long): OrderDetailEntity
+    fun findById(id: Long): LiveData<OrderDetailEntity>
 
     @Query("SELECT * FROM OrderDetail ORDER BY OrderId")
     fun getAll(): LiveData<List<OrderDetailEntity>>
@@ -35,6 +35,10 @@ interface OrderDao {
     @Query("DELETE FROM OrderDetail WHERE OrderId = :id")
     fun deleteById(id: Long): Single<Int>
 
+    @Query("UPDATE  OrderDetail SET PaymentStatus = :paymentStatus WHERE OrderId = :id")
+    fun updatePaymentStatus(paymentStatus: String,id:Long)
+
+
     // OrderItems
 
     @Query("SELECT * FROM OrderItem WHERE OrderId = :id")
@@ -48,4 +52,5 @@ interface OrderDao {
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     fun insertOrderItemList(orderItems: List<OrderItemEntity>): Single<List<Long>>
+
 }
