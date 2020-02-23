@@ -10,18 +10,11 @@ import com.farsheel.mypos.view.category.view.AddEditCategoryViewModel
 import com.farsheel.mypos.view.home.HomeViewModel
 import com.farsheel.mypos.view.login.LoginViewModel
 import com.farsheel.mypos.view.order.OrderHistoryViewModel
-import com.farsheel.mypos.view.payment.airtel.AirtelPaymentViewModel
 import com.farsheel.mypos.view.payment.cash.CashPaymentViewModel
 import com.farsheel.mypos.view.payment.completed.PaymentCompletedViewModel
-import com.farsheel.mypos.view.payment.gmoney.GmoneyPaymentViewModel
-import com.farsheel.mypos.view.payment.masterpass.MasterpassPaymentViewModel
-import com.farsheel.mypos.view.payment.mtn.MtnPaymentViewModel
 import com.farsheel.mypos.view.payment.tender.PaymentTenderViewModel
-import com.farsheel.mypos.view.payment.visa.VisaPaymentViewModel
-import com.farsheel.mypos.view.payment.vodafone.VodafonePaymentViewModel
 import com.farsheel.mypos.view.product.list.ProductListViewModel
 import com.farsheel.mypos.view.product.view.AddEditProductViewModel
-import com.farsheel.mypos.view.qr.QrViewModel
 import com.farsheel.mypos.view.splash.SplashViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.viewmodel.dsl.viewModel
@@ -65,7 +58,6 @@ val repositoryModule = module(override = true) {
 
 val viewModelModule = module {
     viewModel { CartViewModel(get()) }
-    viewModel { QrViewModel(get(), get()) }
     viewModel { CategoryListViewModel(get()) }
     viewModel { AddEditCategoryViewModel(get()) }
     viewModel { HomeViewModel(get(), get(), get()) }
@@ -76,11 +68,5 @@ val viewModelModule = module {
     viewModel { PaymentTenderViewModel(get()) }
     viewModel { ProductListViewModel(get()) }
     viewModel { AddEditProductViewModel(get(), get()) }
-    viewModel { AirtelPaymentViewModel(get(), get()) }
-    viewModel { GmoneyPaymentViewModel(get(), get()) }
-    viewModel { MasterpassPaymentViewModel(get(), get()) }
-    viewModel { MtnPaymentViewModel(get(), get()) }
-    viewModel { VisaPaymentViewModel(get(), get()) }
-    viewModel { VodafonePaymentViewModel(get(), get()) }
     viewModel { SplashViewModel(get()) }
 }

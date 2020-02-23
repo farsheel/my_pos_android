@@ -49,46 +49,6 @@ class PaymentTenderFragment : Fragment() {
             }
         })
 
-
-        paymentTenderViewModel.onSelectAirtel.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
-                view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_airtelPaymentFragment)
-            }
-        })
-
-
-        paymentTenderViewModel.onSelectMtn.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
-                view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_mtnPaymentFragment)
-            }
-        })
-
-
-        paymentTenderViewModel.onSelectVodafone.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
-                view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_vodafonePaymentFragment)
-            }
-        })
-
-
-        paymentTenderViewModel.onSelectGmoney.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
-                view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_gmoneyPaymentFragment)
-            }
-        })
-
-
-        paymentTenderViewModel.onSelectMasterpass.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
-                view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_masterpassPaymentFragment)
-            }
-        })
-
-        paymentTenderViewModel.onSelectVisa.observe(viewLifecycleOwner, Observer {
-            it.getContentIfNotHandled()?.let {
-                view?.findNavController()?.navigate(R.id.action_paymentTenderFragment_to_visaPaymentFragment)
-            }
-        })
     }
 
 }

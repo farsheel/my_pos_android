@@ -36,11 +36,9 @@ fun bindRecyclerViewWithFB(recyclerView: RecyclerView, fb: FloatingActionButton)
 }
 
 @BindingAdapter("removeErrorOnTyping")
-fun removeErrorOnTyping(text: TextInputEditText,textInputLayout: TextInputLayout){
+fun removeErrorOnTyping(text: TextInputEditText, textInputLayout: TextInputLayout) {
     text.addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {
-
-
         }
 
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
