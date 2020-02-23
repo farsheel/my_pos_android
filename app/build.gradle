@@ -34,9 +34,7 @@ android {
     }
 
     buildTypes {
-        def LIVE_URL = "\"https://epe.azurewebsites.net\""
-        //       def LIVE_URL = "\"https://mypos.farsheel.com\""
-//        def LOCAL_URL = "\"https://epe.azurewebsites.net\""
+       def LIVE_URL = "\"https://mypos.farsheel.com\""
         def LOCAL_URL = "\"http://192.168.43.248:8000\""
         debug {
             signingConfig signingConfigs.release
