@@ -7,14 +7,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import com.farsheel.mypos.R
 import com.farsheel.mypos.databinding.LoginFragmentBinding
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class LoginFragment : Fragment() {
 
-    private lateinit var viewModel: LoginViewModel
+    private val loginViewModel: LoginViewModel by viewModel()
     private lateinit var binding: LoginFragmentBinding
 
     override fun onCreateView(
@@ -33,10 +33,9 @@ class LoginFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(LoginViewModel::class.java)
-        binding.viewmodel = viewModel
+        binding.viewmodel = loginViewModel
 
-        viewModel.errorMessage.observe(viewLifecycleOwner, Observer { it ->
+        loginViewModel.errorMessage.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let { message ->
                 context?.let {
                     val builder = AlertDialog.Builder(it)
@@ -45,7 +44,7 @@ class LoginFragment : Fragment() {
                 }
             }
         })
-        viewModel.loginSuccess.observe(viewLifecycleOwner, Observer {
+        loginViewModel.loginSuccess.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()
                     ?.navigate(R.id.action_loginFragment_to_homeFragment)

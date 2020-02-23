@@ -3,28 +3,24 @@ package com.farsheel.mypos.view.payment.completed
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import androidx.databinding.library.baseAdapters.BR
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.navigation.fragment.navArgs
 import com.farsheel.mypos.R
 import com.farsheel.mypos.databinding.PaymentCompletedFragmentBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.payment_completed_fragment.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class PaymentCompletedFragment : Fragment() {
 
-    companion object {
-        fun newInstance() = PaymentCompletedFragment()
-    }
-
     private lateinit var binding: PaymentCompletedFragmentBinding
-
-    private lateinit var viewModel: PaymentCompletedViewModel
+    private val completedViewModel: PaymentCompletedViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -44,19 +40,15 @@ class PaymentCompletedFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(PaymentCompletedViewModel::class.java)
-        binding.viewmodel = viewModel
+        binding.viewmodel = completedViewModel
 
-        viewModel.amountPaid.observe(viewLifecycleOwner, Observer {
-            viewModel.notifyPropertyChanged(BR.amountPaid)
-        })
-        viewModel.startNewSale.observe(viewLifecycleOwner, Observer {
+        completedViewModel.startNewSale.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
-                activity?.onBackPressed()
+               findNavController().navigate(R.id.homeFragment)
             }
         })
 
-        viewModel.snackbarMessage.observe(viewLifecycleOwner, Observer { it ->
+        completedViewModel.snackbarMessage.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled().let {
                 if (it != null) {
                     Snackbar.make(emailLayout, it.message, Snackbar.LENGTH_SHORT)
@@ -65,16 +57,13 @@ class PaymentCompletedFragment : Fragment() {
                 }
             }
         })
-
-        viewModel.onReceipt.observe(viewLifecycleOwner, Observer {
+        completedViewModel.onReceipt.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
-                viewModel.printReceipt()
+                completedViewModel.printReceipt()
             }
         })
-
-        viewModel.amountPaid.value = args.amountPaid.toDouble()
-        viewModel.balance.value = args.balance.toDouble()
-        viewModel.orderId.value = args.orderId
-
+        completedViewModel.amountPaid.set(args.amountPaid.toDouble())
+        completedViewModel.balance.set(args.balance.toDouble())
+        completedViewModel.orderId.set(args.orderId)
     }
 }

@@ -5,7 +5,6 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -14,11 +13,12 @@ import com.farsheel.mypos.R
 import com.farsheel.mypos.data.model.ProductEntity
 import com.farsheel.mypos.databinding.ProductListFragmentBinding
 import kotlinx.android.synthetic.main.product_list_fragment.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class ProductListFragment : Fragment() {
 
     private lateinit var binding: ProductListFragmentBinding
-    private lateinit var viewModel: ProductListViewModel
+    private val productListViewModel: ProductListViewModel by viewModel()
     private lateinit var productAdapter: ProductAdapter
 
     override fun onCreateView(
@@ -38,10 +38,9 @@ class ProductListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(ProductListViewModel::class.java)
-        binding.viewmodel = viewModel
+        binding.viewmodel = productListViewModel
 
-        viewModel.navigateToAddNew.observe(this, Observer {
+        productListViewModel.navigateToAddNew.observe(this, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()
                     ?.navigate(R.id.action_productListFragment_to_addEditProductFragment)
@@ -58,10 +57,10 @@ class ProductListFragment : Fragment() {
             )
         )
 
-        viewModel.productList.observe(this, Observer { pagedNoteList ->
+        productListViewModel.productList.observe(this, Observer { pagedNoteList ->
             pagedNoteList?.let { render(pagedNoteList) }
         })
-        viewModel.filterTextAll.postValue(null)
+        productListViewModel.filterTextAll.postValue(null)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -75,7 +74,7 @@ class ProductListFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                viewModel.filterTextAll.postValue("%$newText%")
+                productListViewModel.filterTextAll.postValue("%$newText%")
                 return false
             }
 

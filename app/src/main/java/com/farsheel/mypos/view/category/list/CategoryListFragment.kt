@@ -5,7 +5,6 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -14,11 +13,12 @@ import com.farsheel.mypos.R
 import com.farsheel.mypos.data.model.CategoryEntity
 import com.farsheel.mypos.databinding.CategoryListFragmentBinding
 import kotlinx.android.synthetic.main.product_list_fragment.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class CategoryListFragment : Fragment() {
 
     private lateinit var binding: CategoryListFragmentBinding
-    private lateinit var viewModel: CategoryListViewModel
+    private  val categoryListViewModel: CategoryListViewModel by viewModel()
 
     private lateinit var categoryAdapter: CategoryAdapter
 
@@ -40,10 +40,9 @@ class CategoryListFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(CategoryListViewModel::class.java)
-        binding.viewmodel = viewModel
+        binding.viewmodel = categoryListViewModel
 
-        viewModel.navigateToAddNew.observe(this, Observer {
+        categoryListViewModel.navigateToAddNew.observe(this, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()
                     ?.navigate(R.id.action_categoryListFragment_to_addEditCategoryFragment)
@@ -55,10 +54,10 @@ class CategoryListFragment : Fragment() {
         productListRcv.layoutManager = LinearLayoutManager(context)
         productListRcv.addItemDecoration(DividerItemDecoration(context, DividerItemDecoration.VERTICAL))
 
-        viewModel.categoryList.observe(this, Observer { pagedNoteList ->
+        categoryListViewModel.getCategoryList().observe(this, Observer { pagedNoteList ->
             pagedNoteList?.let { render(pagedNoteList) }
         })
-        viewModel.filterTextAll.postValue(null)
+        categoryListViewModel.updateSearch(null)
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
@@ -72,7 +71,7 @@ class CategoryListFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                viewModel.filterTextAll.postValue("%$newText%")
+                categoryListViewModel.updateSearch("%$newText%")
                 return false
             }
 

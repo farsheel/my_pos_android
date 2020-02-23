@@ -29,6 +29,9 @@ interface WebServices {
     @POST("api/order")
     fun createOrder(@Body orderRequest: OrderRequest): Single<OrderCreateResponse>
 
+    @GET("api/order")
+    fun getOrderById(@Query("id") orderId: Long): Single<OrderResponse>
+
     @POST("api/send_email_receipt")
     fun sendEmailReceipt(@Body emailReceiptRequest: EmailReceiptRequest): Single<GenericResponse>
 

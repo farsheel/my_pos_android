@@ -6,7 +6,9 @@ import com.google.gson.annotations.SerializedName
 
 data class OrderRequest(
     @SerializedName("items")
-    val items: List<OrderItemEntity>?
+    val items: List<OrderItemEntity>?,
+    @SerializedName("order_pay_id")
+    var payModeId: Long = 1
 )
 
 

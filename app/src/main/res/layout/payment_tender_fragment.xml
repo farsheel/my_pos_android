@@ -46,9 +46,8 @@
                 android:id="@+id/cashTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_large"
                 android:background="@drawable/bg_corner_radius_rectangle"
-                android:drawableTop="@drawable/ic_cash_96dp"
+                android:drawableTop="@drawable/pay_cash_72"
                 android:gravity="center"
                 android:onClick="@{()-> viewmodel.onSelectCash()}"
                 android:padding="@dimen/padding_small"
@@ -57,29 +56,27 @@
                 app:layout_constraintEnd_toStartOf="@+id/chequeTv"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/amountTv"
-                app:layout_constraintVertical_bias=".1" />
+                app:layout_constraintTop_toBottomOf="@id/amountTv" />
 
         <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/chequeTv"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/margin_large"
                 android:background="@drawable/bg_corner_radius_rectangle"
-                android:drawableTop="@drawable/ic_cheque_96dp"
+                android:drawableTop="@drawable/ic_cheque_72dp"
                 android:gravity="center"
-                android:onClick="@{()-> viewmodel.onSelectCheque()}"
+                android:onClick="@{()-> viewmodel.onSelectCash()}"
                 android:padding="@dimen/padding_small"
-                android:visibility="gone"
                 android:text="@string/cheque"
-                app:layout_constraintBottom_toBottomOf="parent"
+                app:layout_constraintBottom_toBottomOf="@+id/cashTv"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintHorizontal_bias="0.5"
                 app:layout_constraintStart_toEndOf="@+id/cashTv"
-                app:layout_constraintTop_toBottomOf="@id/amountTv"
-                app:layout_constraintVertical_bias=".1" />
+                app:layout_constraintTop_toTopOf="@+id/cashTv" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
+
+
 
 </layout>

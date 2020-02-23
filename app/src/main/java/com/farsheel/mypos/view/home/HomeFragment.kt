@@ -3,9 +3,9 @@ package com.farsheel.mypos.view.home
 import android.os.Bundle
 import android.view.*
 import android.view.animation.AnimationUtils
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.paging.PagedListAdapter
 import androidx.recyclerview.widget.DiffUtil
@@ -26,13 +26,14 @@ import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.home_fragment.*
 import kotlinx.android.synthetic.main.layout_grid_item.view.*
 import kotlinx.android.synthetic.main.layout_recycler_view.view.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class HomeFragment : Fragment() {
 
-
     private var clearMenu: MenuItem? = null
     private lateinit var binding: HomeFragmentBinding
+    private val homeViewModel: HomeViewModel by viewModel()
 
     companion object {
         private val productDiffCallBack = object : DiffUtil.ItemCallback<ProductEntity>() {
@@ -46,8 +47,6 @@ class HomeFragment : Fragment() {
                 oldItem == newItem
         }
     }
-
-    private lateinit var viewModel: HomeViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -74,9 +73,7 @@ class HomeFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(HomeViewModel::class.java)
-        binding.viewmodel = viewModel
-
+        binding.viewmodel = homeViewModel
 
         val gridLayoutManager = GridLayoutManager(context, 3)
         recyclerView.recyclerView.layoutManager = gridLayoutManager
@@ -86,11 +83,9 @@ class HomeFragment : Fragment() {
         val adapter = ItemListAdapter()
         recyclerView.adapter = adapter
 
-        viewModel.selectedCat
-
         tabLayout.addTab(tabLayout.newTab().setText("All").setTag(null))
-        viewModel.selectedCat.postValue(null)
-        viewModel.categoryList.observe(viewLifecycleOwner, Observer {
+        homeViewModel.selectCategory(null)
+        homeViewModel.getCategoryList().observe(viewLifecycleOwner, Observer {
             tabLayout.removeAllTabs()
             tabLayout.addTab(tabLayout.newTab().setText("All").setTag(null))
             Observable.fromIterable(it)
@@ -109,34 +104,36 @@ class HomeFragment : Fragment() {
             }
 
             override fun onTabSelected(tab: TabLayout.Tab?) {
-                viewModel.selectedCat.postValue(tab?.tag?.toString()?.toLong())
+                homeViewModel.selectCategory(tab?.tag?.toString()?.toLong())
             }
         })
 
-        viewModel.productList.observe(viewLifecycleOwner, Observer {
+        homeViewModel.getProductList().observe(viewLifecycleOwner, Observer {
             adapter.submitList(it)
         })
 
-        viewModel.cartTotal.observe(viewLifecycleOwner, Observer {
-            viewModel.notifyChange()
+        homeViewModel.getCartTotal().observe(viewLifecycleOwner, Observer {
+            if (it != null){
+                cartBtn.text = getString(R.string.total, Util.currencyLocale(it))
+            }
         })
 
-        viewModel.navigateToCart.observe(viewLifecycleOwner, Observer {
+        homeViewModel.navigateToCart.observe(viewLifecycleOwner, Observer {
             it.getContentIfNotHandled()?.let {
                 view?.findNavController()
                     ?.navigate(R.id.action_homeFragment_to_cartFragment)
             }
         })
-        viewModel.cartList.observe(viewLifecycleOwner, Observer {
+        homeViewModel.getCartList().observe(viewLifecycleOwner, Observer {
             clearMenu?.isVisible = it.isNotEmpty()
-            viewModel.notifyChange()
+            cartBtn?.isVisible = it.isNotEmpty()
         })
     }
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
 
         if (item.itemId == clearMenu?.itemId) {
-            viewModel.clearCart()
+            homeViewModel.clearCart()
         }
 
         return super.onOptionsItemSelected(item)
@@ -145,7 +142,7 @@ class HomeFragment : Fragment() {
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         activity?.menuInflater?.inflate(R.menu.menu_clear_cart, menu)
         clearMenu = menu.findItem(R.id.action_clear_cart)
-        clearMenu?.isVisible = !viewModel.cartList.value.isNullOrEmpty()
+        clearMenu?.isVisible = !homeViewModel.getCartList().value.isNullOrEmpty()
         super.onCreateOptionsMenu(menu, inflater)
     }
 
@@ -160,7 +157,7 @@ class HomeFragment : Fragment() {
                 productEntity?.let {
                     itemView.setOnClickListener {
                         bounceItem(holder.itemView)
-                        viewModel.addToCart(productEntity)
+                        homeViewModel.addToCart(productEntity)
                         holder.itemView.performHapticFeedback(HapticFeedbackConstants.LONG_PRESS)
                     }
                 }

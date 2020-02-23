@@ -4,7 +4,7 @@
         xmlns:tools="http://schemas.android.com/tools"
         android:layout_width="match_parent"
         android:layout_height="150dp"
-        app:cardBackgroundColor="@color/drawerBackground"
+        app:cardBackgroundColor="@color/darkColor"
         app:contentPaddingBottom="@dimen/padding_small">
 
     <LinearLayout

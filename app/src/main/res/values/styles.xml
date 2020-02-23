@@ -38,4 +38,20 @@
         <item name="colorPrimaryDark">@color/drawerBackground</item>
         <item name="colorAccent">@color/drawerBackground</item>
     </style>
+
+
+    <style name="TextLimitStyle" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/colorAccent</item>
+        <item name="android:textStyle">bold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="TextLimitError" parent="TextAppearance.AppCompat.Small">
+        <item name="android:textColor">@color/redUi</item>
+    </style>
+
+
+    <style name="MTNsteps" parent="TextAppearance.AppCompat.Title">
+        <item name="android:textColor">@color/redUi</item>
+    </style>
 </resources>

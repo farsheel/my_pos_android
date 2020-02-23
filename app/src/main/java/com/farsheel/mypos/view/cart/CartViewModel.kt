@@ -1,29 +1,19 @@
 package com.farsheel.mypos.view.cart
 
-import android.app.Application
-import androidx.databinding.Bindable
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
-import androidx.paging.LivePagedListBuilder
+import androidx.paging.PagedList
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.model.CartEntity
+import com.farsheel.mypos.data.repository.CartRepository
 import com.farsheel.mypos.util.Event
-import io.reactivex.schedulers.Schedulers
 
-class CartViewModel(application: Application) : BaseViewModel(application) {
+class CartViewModel(private val cartRepository: CartRepository) : BaseViewModel() {
 
-    @Bindable
     val selectedItem: MutableLiveData<CartEntity> = MutableLiveData()
 
-    @Bindable
     val enteredQuantity: MutableLiveData<String> = MutableLiveData()
-    @Bindable
     val enteredPrice: MutableLiveData<String> = MutableLiveData()
-    val cartList = LivePagedListBuilder(
-        AppDatabase.invoke(application).cartDao().getAllPaged(),
-        20
-    ).build()
 
     private val _itemEditApply = MutableLiveData<Event<Boolean>>()
     val itemEditApply: LiveData<Event<Boolean>> get() = _itemEditApply
@@ -34,37 +24,46 @@ class CartViewModel(application: Application) : BaseViewModel(application) {
     private val _closeBottomSheet = MutableLiveData<Event<Boolean>>()
     val closeBottomSheet: LiveData<Event<Boolean>> get() = _closeBottomSheet
 
-    @Bindable
-    val cartSubTotal = AppDatabase.invoke(application).cartDao().getCartTotal()
+    val cartSubTotal = cartRepository.cartSubTotal
 
-    @Bindable
-    val discountApplied : MutableLiveData<Double> = MutableLiveData()
 
+    val cartVAT = cartRepository.cartVatTotal
+
+    val cartVATTotal = cartRepository.cartVatTotalPay
+
+    val discountApplied: MutableLiveData<Double> = MutableLiveData()
+
+
+    fun getSubTotal(): LiveData<Double> {
+        return cartRepository.cartSubTotal
+    }
+
+    fun getCartList(): LiveData<PagedList<CartEntity>> {
+        return cartRepository.cartList
+    }
 
     fun addToCart(cartEntity: CartEntity) {
-        AppDatabase.invoke(getApplication()).cartDao().insert(cartEntity)
-            .subscribeOn(Schedulers.io()).subscribe()
+        cartRepository.addToCart(cartEntity)
     }
 
     fun removeCart(cartEntity: CartEntity) {
-        AppDatabase.invoke(getApplication()).cartDao().deleteById(cartEntity.id)
-            .subscribeOn(Schedulers.io()).subscribe()
-
+        cartRepository.removeCart(cartEntity)
     }
 
-    fun onClickPay(){
+
+    fun onClickPay() {
         _onClickPay.postValue(Event(true))
     }
 
-    fun closeBottomSheet(){
+    fun closeBottomSheet() {
         _closeBottomSheet.postValue(Event(true))
     }
 
     fun updateItem() {
-        if (enteredQuantity.value.isNullOrEmpty()){
+        if (enteredQuantity.value.isNullOrEmpty()) {
             enteredQuantity.postValue("1")
         }
-        if (enteredPrice.value.isNullOrEmpty()){
+        if (enteredPrice.value.isNullOrEmpty()) {
             enteredPrice.postValue("0")
         }
         _itemEditApply.postValue(Event(true))

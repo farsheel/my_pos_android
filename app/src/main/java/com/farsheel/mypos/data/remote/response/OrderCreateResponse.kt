@@ -13,7 +13,9 @@ data class OrderCreateResponse(
     @SerializedName("order_id")
     val orderId: Long = 0,
     @SerializedName("status")
-    val status: Boolean = false
+    val status: Boolean = false,
+    @SerializedName("qr_code")
+    val qrCode: String
 )
 
 

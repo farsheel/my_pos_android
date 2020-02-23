@@ -1,28 +1,23 @@
 package com.farsheel.mypos.view.category.view
 
-import android.app.Application
-import androidx.core.content.ContextCompat
-import androidx.databinding.library.baseAdapters.BR
+import androidx.databinding.ObservableField
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.farsheel.mypos.R
 import com.farsheel.mypos.base.BaseViewModel
-import com.farsheel.mypos.data.local.AppDatabase
 import com.farsheel.mypos.data.model.CategoryEntity
 import com.farsheel.mypos.data.model.FeedbackMessage
-import com.farsheel.mypos.data.remote.ApiClient
 import com.farsheel.mypos.data.remote.response.CategoryCreateResponse
+import com.farsheel.mypos.data.repository.CategoryRepository
 import com.farsheel.mypos.util.Event
 import com.farsheel.mypos.view.product.view.AddEditProductViewModel
 import io.reactivex.SingleObserver
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.observers.DisposableSingleObserver
-import io.reactivex.schedulers.Schedulers
 
 
-class AddEditCategoryViewModel(application: Application) : BaseViewModel(application) {
+class AddEditCategoryViewModel(val categoryRepository: CategoryRepository) : BaseViewModel() {
 
     companion object {
         private val TAG = AddEditProductViewModel::class.java.simpleName
@@ -39,41 +34,32 @@ class AddEditCategoryViewModel(application: Application) : BaseViewModel(applica
     val catId = MutableLiveData<Long>()
 
 
-    private val _nameError = MutableLiveData<String>()
-    val nameError: LiveData<String> = _nameError
+    val nameError: ObservableField<String> = ObservableField()
 
-    private val _descriptionError = MutableLiveData<String>()
-    val descriptionError: LiveData<String> = _descriptionError
-
+    val descriptionError: ObservableField<String> = ObservableField()
 
     private val _saveError = MutableLiveData<Event<String>>()
     val saveError: LiveData<Event<String>> = _saveError
 
-    private val _busy = MutableLiveData<Boolean>()
-    val busy: LiveData<Boolean> get() = _busy
+    val busy: ObservableField<Boolean> = ObservableField()
 
     fun addEditProduct() {
-
         var valid = true
-
         if (catName.value.isNullOrEmpty()) {
-            _nameError.postValue(getApplication<Application>().getString(R.string.name_can_not_be_empty))
-            notifyPropertyChanged(BR._all)
+            nameError.set(categoryRepository.getResources().getString(R.string.name_can_not_be_empty))
             valid = false
         } else {
-            _nameError.postValue(null)
+            nameError.set(null)
         }
 
         if (catDescription.value.isNullOrEmpty()) {
-            _descriptionError.postValue(getApplication<Application>().getString(R.string.description_can_not_be_empty))
-            notifyPropertyChanged(BR._all)
+            descriptionError.set(categoryRepository.getResources().getString(R.string.description_can_not_be_empty))
             valid = false
         } else {
-            _descriptionError.postValue(null)
+            descriptionError.set(null)
         }
 
         if (valid) {
-
             val categoryEntity = CategoryEntity(
                 catId = catId.value,
                 description = catDescription.value.orEmpty(),
@@ -81,9 +67,7 @@ class AddEditCategoryViewModel(application: Application) : BaseViewModel(applica
             )
             setBusy(true)
             val createDisposable =
-                ApiClient.getApiService(getApplication()).createOrUpdateCategory(categoryEntity)
-                    .subscribeOn(Schedulers.io())
-                    .observeOn(AndroidSchedulers.mainThread())
+                categoryRepository.addEditCategoryRemote(categoryEntity)
                     .subscribeWith(object : DisposableSingleObserver<CategoryCreateResponse>() {
                         override fun onSuccess(t: CategoryCreateResponse) {
                             setBusy(false)
@@ -93,7 +77,6 @@ class AddEditCategoryViewModel(application: Application) : BaseViewModel(applica
                                 _saveError.value = Event(t.message)
                             }
                         }
-
                         override fun onError(e: Throwable) {
                             setBusy(false)
                             _saveError.value = Event(e.localizedMessage)
@@ -109,14 +92,11 @@ class AddEditCategoryViewModel(application: Application) : BaseViewModel(applica
     }
 
     private fun setBusy(isBusy: Boolean) {
-        _busy.value = isBusy
-        notifyChange()
+        busy.set(isBusy)
     }
 
     private fun saveCategory(categoryEntity: CategoryEntity) {
-        AppDatabase.invoke(getApplication()).categoryDao().insert(categoryEntity)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
+        categoryRepository.saveCategory(categoryEntity)
             .subscribe(object : SingleObserver<Long> {
                 override fun onSubscribe(d: Disposable) {
                 }
@@ -124,8 +104,8 @@ class AddEditCategoryViewModel(application: Application) : BaseViewModel(applica
                 override fun onError(e: Throwable) {
 
                     val feedbackMessage = FeedbackMessage(
-                        color = ContextCompat.getColor(getApplication(), R.color.redUi),
-                        message = getApplication<Application>().getString(R.string.something_went_wrong)
+                        color = categoryRepository.getColor(R.color.redUi),
+                        message = categoryRepository.getResources().getString(R.string.something_went_wrong)
                     )
                     _snackbarMessage.postValue(Event(feedbackMessage))
                 }
@@ -133,8 +113,8 @@ class AddEditCategoryViewModel(application: Application) : BaseViewModel(applica
                 override fun onSuccess(t: Long) {
                     catId.postValue(t)
                     val feedbackMessage = FeedbackMessage(
-                        color = ContextCompat.getColor(getApplication(), R.color.greenUi),
-                        message = getApplication<Application>().getString(R.string.category_saved)
+                        color = categoryRepository.getColor(R.color.greenUi),
+                        message = categoryRepository.getResources().getString(R.string.category_saved)
                     )
                     _snackbarMessage.postValue(Event(feedbackMessage))
                 }

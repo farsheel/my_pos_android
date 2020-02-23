@@ -5,7 +5,6 @@ import android.view.*
 import androidx.appcompat.widget.SearchView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.paging.PagedList
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -13,6 +12,7 @@ import com.farsheel.mypos.R
 import com.farsheel.mypos.data.model.OrderDetailEntity
 import com.farsheel.mypos.databinding.OrderHistoryFragmentBinding
 import kotlinx.android.synthetic.main.order_history_fragment.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 class OrderHistoryFragment : Fragment() {
 
@@ -21,7 +21,7 @@ class OrderHistoryFragment : Fragment() {
     }
 
     private lateinit var orderHistoryAdapter: OrderHistoryAdapter
-    private lateinit var viewModel: OrderHistoryViewModel
+    private val orderHistoryViewModel: OrderHistoryViewModel by viewModel()
     private lateinit var binding: OrderHistoryFragmentBinding
 
     override fun onCreateView(
@@ -40,10 +40,7 @@ class OrderHistoryFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(OrderHistoryViewModel::class.java)
-        this.binding.viewmodel = viewModel
-
-
+        this.binding.viewmodel = orderHistoryViewModel
         orderHistoryAdapter = OrderHistoryAdapter()
         orderHistoryRcv.adapter = orderHistoryAdapter
         orderHistoryRcv.layoutManager = LinearLayoutManager(context)
@@ -53,11 +50,10 @@ class OrderHistoryFragment : Fragment() {
                 DividerItemDecoration.VERTICAL
             )
         )
-
-        viewModel.productList.observe(this, Observer { pagedNoteList ->
+        orderHistoryViewModel.getOrderHistory().observe(this, Observer { pagedNoteList ->
             pagedNoteList?.let { render(pagedNoteList) }
         })
-        viewModel.filterTextAll.postValue(null)
+        orderHistoryViewModel.searchOrder(null)
     }
 
 
@@ -72,7 +68,7 @@ class OrderHistoryFragment : Fragment() {
 
         searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
             override fun onQueryTextChange(newText: String): Boolean {
-                viewModel.filterTextAll.postValue("%$newText%")
+                orderHistoryViewModel.searchOrder("%$newText%")
                 return false
             }
 

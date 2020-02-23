@@ -10,7 +10,7 @@
             android:id="@+id/splashFragment"
             android:name="com.farsheel.mypos.view.splash.SplashFragment"
             android:label="splash_fragment"
-            tools:layout="@layout/splash_fragment" >
+            tools:layout="@layout/splash_fragment">
         <action
                 android:id="@+id/action_splashFragment_to_loginFragment"
                 app:destination="@id/loginFragment"
@@ -20,8 +20,7 @@
                 app:popEnterAnim="@anim/nav_default_pop_enter_anim"
                 app:popExitAnim="@anim/nav_default_pop_exit_anim"
                 app:popUpTo="@+id/main_navigation"
-                app:popUpToInclusive="true"
-                />
+                app:popUpToInclusive="true" />
         <action
                 android:id="@+id/action_splashFragment_to_homeFragment"
                 app:destination="@id/homeFragment"
@@ -39,7 +38,7 @@
             android:label="login_fragment"
             app:popUpTo="@+id/main_navigation"
             app:popUpToInclusive="true"
-            tools:layout="@layout/login_fragment" >
+            tools:layout="@layout/login_fragment">
         <action
                 android:id="@+id/action_loginFragment_to_homeFragment"
                 app:destination="@id/homeFragment"
@@ -48,8 +47,7 @@
                 app:popEnterAnim="@anim/nav_default_pop_enter_anim"
                 app:popExitAnim="@anim/nav_default_pop_exit_anim"
                 app:popUpTo="@+id/main_navigation"
-                app:popUpToInclusive="true"
-                />
+                app:popUpToInclusive="true" />
     </fragment>
 
 
@@ -127,7 +125,7 @@
             android:id="@+id/cartFragment"
             android:name="com.farsheel.mypos.view.cart.CartFragment"
             android:label="Cart"
-            tools:layout="@layout/cart_fragment" >
+            tools:layout="@layout/cart_fragment">
         <action
                 android:id="@+id/action_cartFragment_to_paymentTenderFragment"
                 app:destination="@id/paymentTenderFragment"
@@ -140,7 +138,7 @@
             android:id="@+id/paymentTenderFragment"
             android:name="com.farsheel.mypos.view.payment.tender.PaymentTenderFragment"
             android:label="Payment"
-            tools:layout="@layout/payment_tender_fragment" >
+            tools:layout="@layout/payment_tender_fragment">
         <action
                 android:id="@+id/action_paymentTenderFragment_to_cashPaymentFragment"
                 app:destination="@id/cashPaymentFragment"
@@ -153,7 +151,7 @@
             android:id="@+id/cashPaymentFragment"
             android:name="com.farsheel.mypos.view.payment.cash.CashPaymentFragment"
             android:label="Cash"
-            tools:layout="@layout/cash_payment_fragment" >
+            tools:layout="@layout/cash_payment_fragment">
         <action
                 android:id="@+id/action_cashPaymentFragment_to_paymentCompletedFragment"
                 app:destination="@id/paymentCompletedFragment"
@@ -163,22 +161,23 @@
                 app:popExitAnim="@anim/nav_default_pop_exit_anim"
                 app:popUpTo="@+id/homeFragment" />
     </fragment>
+
+
+
     <fragment
             android:id="@+id/paymentCompletedFragment"
             android:name="com.farsheel.mypos.view.payment.completed.PaymentCompletedFragment"
             android:label="Completed"
-            tools:layout="@layout/payment_completed_fragment" >
+            tools:layout="@layout/payment_completed_fragment">
         <argument
                 android:name="orderId"
                 app:argType="long" />
         <argument
                 android:name="amountPaid"
-                app:argType="float"
-                 />
+                app:argType="float" />
         <argument
                 android:name="balance"
-                app:argType="float"
-                />
+                app:argType="float" />
     </fragment>
     <fragment
             android:id="@+id/orderHistoryFragment"

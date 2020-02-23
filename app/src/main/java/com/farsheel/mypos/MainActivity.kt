@@ -79,6 +79,15 @@ class MainActivity : AppCompatActivity() {
             if (drawer_layout.isDrawerOpen(GravityCompat.START))
                 drawer_layout.closeDrawer(GravityCompat.START)
         }
+        navigationView.setNavigationItemSelectedListener { item ->
+            if (item.itemId == R.id.action_nav_logout) {
+                showLogout(false)
+                return@setNavigationItemSelectedListener true
+            }else{
+                navController.navigate(item.itemId)
+            }
+            false
+        }
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -106,17 +115,26 @@ class MainActivity : AppCompatActivity() {
             .doOnNext {
                 when (it) {
                     AppEvent.TokenExpired -> {
-                        showLogout()
+                        showLogout(true)
                     }
                 }
             }
             .subscribe()
 
 
-    private fun showLogout() {
+    private fun showLogout(isSessionExpired: Boolean) {
+        drawer_layout.closeDrawer(GravityCompat.START)
         val builder = AlertDialog.Builder(this)
-        builder.setMessage(getString(R.string.your_session_is_expired))
-        builder.setPositiveButton(getString(R.string.login)) { dialog, _ ->
+        if (isSessionExpired) {
+            builder.setMessage(getString(R.string.your_session_is_expired))
+        } else {
+            builder.setMessage(getString(R.string.are_you_sure_want_to_logout))
+        }
+        val buttonText = when (isSessionExpired) {
+            true -> getString(R.string.login)
+            false -> getString(R.string.logout)
+        };
+        builder.setPositiveButton(buttonText) { dialog, _ ->
             dialog.dismiss()
             PreferenceManager.clear(this)
             compositeDisposable.add(Completable.fromAction {
@@ -125,7 +143,11 @@ class MainActivity : AppCompatActivity() {
             navController.popBackStack(R.id.splashFragment, false)
             navController.navigate(R.id.splashFragment)
         }
-        builder.setCancelable(false)
+        if (isSessionExpired) {
+            builder.setCancelable(false)
+        } else {
+            builder.setCancelable(true)
+        }
         builder.show()
     }
 }

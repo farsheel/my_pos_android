@@ -13,7 +13,7 @@
             android:textSize="20sp"
             android:textColor="@android:color/white"
             android:padding="@dimen/padding_large"
-            android:background="@color/drawerBackground"
+            android:background="@color/darkColor"
     />
 
 </LinearLayout>

@@ -8,18 +8,18 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AlertDialog
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import com.farsheel.mypos.R
 import com.farsheel.mypos.databinding.AddEditCategoryFragmentBinding
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.add_edit_category_fragment.*
+import org.koin.android.viewmodel.ext.android.viewModel
 
 
 class AddEditCategoryFragment : Fragment() {
 
 
     private lateinit var binding: AddEditCategoryFragmentBinding
-    private lateinit var viewModel: AddEditCategoryViewModel
+    private val addEditCategoryViewModel: AddEditCategoryViewModel by viewModel()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -38,9 +38,8 @@ class AddEditCategoryFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        viewModel = ViewModelProviders.of(this).get(AddEditCategoryViewModel::class.java)
-        binding.viewmodel = viewModel
-        viewModel.snackbarMessage.observe(this, Observer { it ->
+        binding.viewmodel = addEditCategoryViewModel
+        addEditCategoryViewModel.snackbarMessage.observe(this, Observer { it ->
             it.getContentIfNotHandled().let {
                 if (it != null) {
                     Snackbar.make(saveCatFab, it.message, Snackbar.LENGTH_SHORT)
@@ -50,7 +49,7 @@ class AddEditCategoryFragment : Fragment() {
             }
         })
 
-        viewModel.saveError.observe(viewLifecycleOwner, Observer { it ->
+        addEditCategoryViewModel.saveError.observe(viewLifecycleOwner, Observer { it ->
             it.getContentIfNotHandled()?.let { message ->
                 context?.let {
                     val builder = AlertDialog.Builder(it)

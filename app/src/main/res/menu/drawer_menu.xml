@@ -20,4 +20,9 @@
             android:id="@+id/action_nav_settings"
             android:title="@string/settings"
             android:icon="@drawable/ic_settings_white_24dp"/>
+
+    <item
+            android:id="@+id/action_nav_logout"
+            android:title="@string/logout"
+            android:icon="@drawable/ic_logout_white_24dp"/>
 </menu>

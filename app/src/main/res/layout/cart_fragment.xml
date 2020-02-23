@@ -48,11 +48,11 @@
                     app:layout_constraintStart_toStartOf="parent">
 
                 <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/subTotalTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         tools:text="Subtotal : $100"
-                        android:text="@{@string/subtotal(Util.currencyLocale(viewmodel.cartSubTotal))}"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
                         android:textColor="@android:color/white" />
 
@@ -66,21 +66,33 @@
                         android:textColor="@android:color/white" />
 
                 <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/vatTv"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="end"
+                        tools:text="VAT :$0"
+                        android:text="@{@string/vat(Util.currencyLocale(viewmodel.cartVAT))}"
+                        android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle2"
+                        android:textColor="@android:color/white" />
+
+                <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/totalTv"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="end"
                         tools:text="Total : $100"
-                        android:text="@{@string/total(Util.currencyLocale(viewmodel.cartSubTotal+viewmodel.discountApplied))}"
+                        android:text="@{@string/total(Util.currencyLocale(viewmodel.cartSubTotal+viewmodel.cartVAT+viewmodel.discountApplied))}"
                         android:textAppearance="@style/TextAppearance.MaterialComponents.Subtitle1"
                         android:textColor="@android:color/white" />
 
                 <com.google.android.material.button.MaterialButton
+                        android:id="@+id/payBtn"
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:textAllCaps="false"
                         tools:text="Pay ( $100 )"
-                        android:onClick="@{()-> viewmodel.onClickPay()}"
-                        android:text="@{@string/pay(Util.currencyLocale(viewmodel.cartSubTotal+viewmodel.discountApplied))}" />
+                        android:onClick="@{()-> viewmodel.onClickPay()}" />
+
 
 
             </LinearLayout>
@@ -104,10 +116,10 @@
                 app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
             <androidx.appcompat.widget.AppCompatTextView
+                    android:id="@+id/editNameTv"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:drawableEnd="@drawable/ic_close_gray_24dp"
-                    android:drawableRight="@drawable/ic_close_gray_24dp"
                     android:gravity="center"
                     android:onClick="@{()-> viewmodel.closeBottomSheet()}"
                     android:text="@{viewmodel.selectedItem.name}"
@@ -141,6 +153,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:inputType="numberDecimal"
+                        android:visibility="gone"
                         android:text="@={viewmodel.enteredPrice}" />
 
             </com.google.android.material.textfield.TextInputLayout>
