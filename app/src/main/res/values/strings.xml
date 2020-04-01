@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">ghFISCAL</string>
+    <string name="app_name">myPOS</string>
     <string name="version">version: 1.0.0</string>
     <string name="action_settings">Settings</string>
     <string name="products">Products</string>
@@ -67,7 +67,7 @@
     <string name="search_order">Search Order</string>
     <string name="uploading">Uploading</string>
     <string name="in_progress">In progress</string>
-    <string name="your_session_is_expired">Your sesion is expired</string>
+    <string name="your_session_is_expired">Your session is expired</string>
     <string name="are_you_sure_want_to_logout">Are you sure want to logout</string>
     <string name="vat_raffle">VAT Promo</string>
 
@@ -75,14 +75,6 @@
     <string name="pay_steps">Approval Steps</string>
 
 
-    <string name="mtn_steps">MTN MoMo customer steps to follow:
-Dial *170#
-Select 6 My Wallet
-Select 3 My Approvals
-Enter PIN to get your Pending Approvals
-Select the DEBIT GHS 66.75 initiated by epesewa
-Select 1 Yes to approve the transaction
-Wait for DEBIT confirmation prompt or SMS</string>
     <string name="syncing">Syncing..</string>
     <string name="fetching_products">Fetching products</string>
     <string name="fetching_categories">Fetching categories</string>
